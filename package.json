@@ -21,7 +21,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://registry.npmjs.org/package/react-anagram-animation"
+        "url": "git://github.com/scottcanoni/react-anagram-animation"
     },
     "keywords": [
         "anagram",
