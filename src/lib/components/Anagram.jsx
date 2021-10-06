@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { createRef, useEffect, useState, useCallback } from 'react';
+import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { randomMinMax } from '../utils';
 import useFontFaceObserver from 'use-font-face-observer';
 
@@ -9,9 +9,8 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
     const wordContainerRef1 = createRef();
     const wordContainerRef2 = createRef();
     const animationContainerRef = createRef();
-    const lettersRef1 = [...words[0]].map(() => createRef());
-    const lettersRef2 = [...words[1]].map(() => createRef());
-    const animationLettersRef = [...words[0]].map(() => createRef());
+    const lettersRefs1 = useRef([...words[0]].map(() => createRef()));
+    const lettersRefs2 = useRef([...words[1]].map(() => createRef()));
     const [swapAnimations, setSwapAnimations] = useState({});
     const playAnimation = useCallback((i, playing = true) => {
         setSwapAnimations((prevState) => {
@@ -32,8 +31,8 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
         style,
         stretch,
     };
-
-    const isFontLoaded = useFontFaceObserver(family ? [fontFace] : []);
+    const enableFontFaceObserver = family || weight || style || stretch;
+    const isFontLoaded = useFontFaceObserver(enableFontFaceObserver ? [fontFace] : []);
 
     useEffect(() => {
         if (!isFontLoaded) {
@@ -63,13 +62,13 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
             const swap = {
                 src: {
                     letter,
-                    element: lettersRef1[i].current,
-                    offsetLeft: lettersRef1[i].current.offsetLeft,
+                    element: lettersRefs1.current[i].current,
+                    offsetLeft: lettersRefs1.current[i].current.offsetLeft,
                 },
                 dest: {
                     letter: words[1][destLetterIndex],
-                    element: lettersRef2[destLetterIndex].current,
-                    offsetLeft: lettersRef2[destLetterIndex].current.offsetLeft,
+                    element: lettersRefs2.current[destLetterIndex].current,
+                    offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft,
                 },
             };
             swaps.push(swap);
@@ -95,21 +94,21 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
 
         animateFunc();
 
-    }, [isFontLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [isFontLoaded, lettersRefs1, lettersRefs2, playAnimation, words]);
 
     return (
         <div className="anagram-swap">
             <div className="word word-1 hidden" ref={wordContainerRef1}>
                 {
                     [...words[0]].map((letter, i) => {
-                        return <span ref={lettersRef1[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
+                        return <span ref={lettersRefs1.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
             <div className="word word-2 hidden" ref={wordContainerRef2}>
                 {
                     [...words[1]].map((letter, i) => {
-                        return <span ref={lettersRef2[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
+                        return <span ref={lettersRefs2.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
@@ -128,7 +127,6 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
                                 key={`${i}${letter}`}
                                 className="letter"
                                 style={letterStyles}
-                                ref={animationLettersRef[i]}
                             >
                                 {letter}
                             </span>
