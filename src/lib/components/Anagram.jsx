@@ -5,6 +5,15 @@ import useFontFaceObserver from 'use-font-face-observer';
 
 const DEFAULT_WORDS = ['TacosNTonic', 'ScottCanoni'];
 
+/**
+ * Render and animate from one word to another word and back again.
+ * @param {string} family The font-family: `Open Sans`, `Roboto`, `Montserrat` etc
+ * @param {string|number} weight The font-weight: normal, bold, 800, etc
+ * @param {string} style The font-style: normal, italic, oblique
+ * @param {string} stretch The font stretch: normal, condensed, expanded, etc
+ * @param {[{string}]} words The 2 words to animate between.
+ * @returns {JSX.Element}
+ */
 export default function Anagram({ family, weight, style, stretch, words = DEFAULT_WORDS }) {
     const wordContainerRef1 = createRef();
     const wordContainerRef2 = createRef();
