@@ -28,6 +28,15 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 const DEFAULT_WORDS = ['TacosNTonic', 'ScottCanoni'];
+/**
+ * Render and animate from one word to another word and back again.
+ * @param {string} family The font-family: `Open Sans`, `Roboto`, `Montserrat` etc
+ * @param {string|number} weight The font-weight: normal, bold, 800, etc
+ * @param {string} style The font-style: normal, italic, oblique
+ * @param {string} stretch The font stretch: normal, condensed, expanded, etc
+ * @param {[{string}]} words The 2 words to animate between.
+ * @returns {JSX.Element}
+ */
 
 function Anagram(_ref) {
   let {
@@ -40,9 +49,8 @@ function Anagram(_ref) {
   const wordContainerRef1 = /*#__PURE__*/(0, _react.createRef)();
   const wordContainerRef2 = /*#__PURE__*/(0, _react.createRef)();
   const animationContainerRef = /*#__PURE__*/(0, _react.createRef)();
-  const lettersRef1 = [...words[0]].map(() => /*#__PURE__*/(0, _react.createRef)());
-  const lettersRef2 = [...words[1]].map(() => /*#__PURE__*/(0, _react.createRef)());
-  const animationLettersRef = [...words[0]].map(() => /*#__PURE__*/(0, _react.createRef)());
+  const lettersRefs1 = (0, _react.useRef)([...words[0]].map(() => /*#__PURE__*/(0, _react.createRef)()));
+  const lettersRefs2 = (0, _react.useRef)([...words[1]].map(() => /*#__PURE__*/(0, _react.createRef)()));
   const [swapAnimations, setSwapAnimations] = (0, _react.useState)({});
   const playAnimation = (0, _react.useCallback)(function (i) {
     let playing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -62,7 +70,8 @@ function Anagram(_ref) {
     style,
     stretch
   };
-  const isFontLoaded = (0, _useFontFaceObserver.default)(family ? [fontFace] : []);
+  const enableFontFaceObserver = family || weight || style || stretch;
+  const isFontLoaded = (0, _useFontFaceObserver.default)(enableFontFaceObserver ? [fontFace] : []);
   (0, _react.useEffect)(() => {
     if (!isFontLoaded) {
       // wait until fonts are loaded
@@ -90,13 +99,13 @@ function Anagram(_ref) {
       const swap = {
         src: {
           letter,
-          element: lettersRef1[i].current,
-          offsetLeft: lettersRef1[i].current.offsetLeft
+          element: lettersRefs1.current[i].current,
+          offsetLeft: lettersRefs1.current[i].current.offsetLeft
         },
         dest: {
           letter: words[1][destLetterIndex],
-          element: lettersRef2[destLetterIndex].current,
-          offsetLeft: lettersRef2[destLetterIndex].current.offsetLeft
+          element: lettersRefs2.current[destLetterIndex].current,
+          offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft
         }
       };
       swaps.push(swap);
@@ -118,8 +127,7 @@ function Anagram(_ref) {
     };
 
     animateFunc();
-  }, [isFontLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  }, [isFontLoaded, lettersRefs1, lettersRefs2, playAnimation, words]);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "anagram-swap"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -127,7 +135,7 @@ function Anagram(_ref) {
     ref: wordContainerRef1
   }, [...words[0]].map((letter, i) => {
     return /*#__PURE__*/_react.default.createElement("span", {
-      ref: lettersRef1[i],
+      ref: lettersRefs1.current[i],
       className: "letter",
       key: "".concat(i).concat(letter)
     }, letter);
@@ -136,7 +144,7 @@ function Anagram(_ref) {
     ref: wordContainerRef2
   }, [...words[1]].map((letter, i) => {
     return /*#__PURE__*/_react.default.createElement("span", {
-      ref: lettersRef2[i],
+      ref: lettersRefs2.current[i],
       className: "letter",
       key: "".concat(i).concat(letter)
     }, letter);
@@ -157,8 +165,7 @@ function Anagram(_ref) {
     return /*#__PURE__*/_react.default.createElement("span", {
       key: "".concat(i).concat(letter),
       className: "letter",
-      style: letterStyles,
-      ref: animationLettersRef[i]
+      style: letterStyles
     }, letter);
   })));
 }
