@@ -3,7 +3,7 @@ import React, { createRef, useCallback, useEffect, useRef, useState } from 'reac
 import { randomMinMax } from '../utils';
 import useFontFaceObserver from 'use-font-face-observer';
 
-const DEFAULT_WORDS = ['TacosNTonic', 'ScottCanoni'];
+const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
 
 /**
  * Render and animate from one word to another word and back again.
@@ -53,10 +53,6 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
         const destLettersPairedByIndex = [];
 
         [...words[0]].forEach((letter, i) => {
-            if (!letter.trim()) { // ignore spaces
-                return;
-            }
-
             // Find a matching dest character to execute the swap with
             const destLetterIndex = [...words[1]].findIndex((destLetter, srcIndex) => {
                 return destLetter.toLowerCase() === letter.toLowerCase()

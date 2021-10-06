@@ -10,6 +10,10 @@ ReactDOM.render(
             <h2>Demo</h2>
 
             <Anagram family="Open Sans" />
+
+            <br/><br/><br/>
+
+            <Anagram family="Open Sans" words={['Maria Annotating Camera', 'React Anagram Animation']} />
         </div>
     </React.StrictMode>,
     document.getElementById('root'),

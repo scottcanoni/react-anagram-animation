@@ -7,8 +7,6 @@ exports.default = Anagram;
 
 require("core-js/modules/web.dom-collections.iterator.js");
 
-require("core-js/modules/es.string.trim.js");
-
 var _react = _interopRequireWildcard(require("react"));
 
 var _utils = require("../utils");
@@ -27,7 +25,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const DEFAULT_WORDS = ['TacosNTonic', 'ScottCanoni'];
+const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
 /**
  * Render and animate from one word to another word and back again.
  * @param {string} family The font-family: `Open Sans`, `Roboto`, `Montserrat` etc
@@ -81,12 +79,7 @@ function Anagram(_ref) {
     const swaps = [];
     const destLettersPairedByIndex = [];
     [...words[0]].forEach((letter, i) => {
-      if (!letter.trim()) {
-        // ignore spaces
-        return;
-      } // Find a matching dest character to execute the swap with
-
-
+      // Find a matching dest character to execute the swap with
       const destLetterIndex = [...words[1]].findIndex((destLetter, srcIndex) => {
         return destLetter.toLowerCase() === letter.toLowerCase() && destLettersPairedByIndex[srcIndex] !== true;
       });
