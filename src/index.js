@@ -5,7 +5,12 @@ import './App.css';
 
 ReactDOM.render(
     <React.StrictMode>
-        <Anagram />
+        <div>
+            <h1>React Anagram Animation</h1>
+            <h2>Demo</h2>
+
+            <Anagram family="Open Sans" />
+        </div>
     </React.StrictMode>,
     document.getElementById('root'),
 );
