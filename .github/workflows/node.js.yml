@@ -29,9 +29,6 @@ jobs:
       - name: Run a one-line script
         run: echo Building now...
 
-      - name: action-yarn
-        uses: comchangs/action-yarn@v0.1-beta
-
       - name: install
         run: yarn
 
