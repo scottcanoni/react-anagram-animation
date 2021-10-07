@@ -13,7 +13,9 @@ Install
 Demo
 ----
 
-Coming soon
+[DEMO](https://codesandbox.io/s/pcszv)
+
+[CodeSandbox](https://pcszv.csb.app/)
 
 Usage
 ----
