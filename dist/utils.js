@@ -17,7 +17,7 @@ require("core-js/modules/es.string.split.js");
 function isAnagram(stringA, stringB) {
   // Sanitizing
   stringA = stringA.toLowerCase().replace(/[\W_]+/g, '');
-  stringB = stringB.toLowerCase().replace(/[\W_]+/g, ''); // sorting
+  stringB = stringB.toLowerCase().replace(/[\W_]+/g, ''); // Sorting
 
   const stringASorted = stringA.split('').sort().join('');
   const stringBSorted = stringB.split('').sort().join('');

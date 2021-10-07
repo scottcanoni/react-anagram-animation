@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 Object.defineProperty(exports, "isAnagram", {
   enumerable: true,
   get: function get() {
     return _utils.isAnagram;
   }
 });
-exports.default = void 0;
 
 var _index = _interopRequireDefault(require("./components/index"));
 
