@@ -44,9 +44,6 @@ function Anagram(_ref) {
     stretch,
     words = DEFAULT_WORDS
   } = _ref;
-  const wordContainerRef1 = /*#__PURE__*/(0, _react.createRef)();
-  const wordContainerRef2 = /*#__PURE__*/(0, _react.createRef)();
-  const animationContainerRef = /*#__PURE__*/(0, _react.createRef)();
   const lettersRefs1 = (0, _react.useRef)([...words[0]].map(() => /*#__PURE__*/(0, _react.createRef)()));
   const lettersRefs2 = (0, _react.useRef)([...words[1]].map(() => /*#__PURE__*/(0, _react.createRef)()));
   const [swapAnimations, setSwapAnimations] = (0, _react.useState)({});
@@ -87,18 +84,23 @@ function Anagram(_ref) {
 
       if (destLetterIndex === -1) {
         throw new Error("Not sure how to animate since all source letters were paired already, disappear maybe?");
-      }
+      } // If the text wraps then the offset left isn't correct.
+
 
       const swap = {
         src: {
           letter,
           element: lettersRefs1.current[i].current,
-          offsetLeft: lettersRefs1.current[i].current.offsetLeft
+          offsetLeft: lettersRefs1.current[i].current.offsetLeft,
+          offsetTop: lettersRefs1.current[i].current.offsetTop // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
+
         },
         dest: {
           letter: words[1][destLetterIndex],
           element: lettersRefs2.current[destLetterIndex].current,
-          offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft
+          offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft,
+          offsetTop: lettersRefs2.current[destLetterIndex].current.offsetTop // rect: lettersRefs2.current[destLetterIndex].current.getBoundingClientRect(),
+
         }
       };
       swaps.push(swap);
@@ -107,13 +109,16 @@ function Anagram(_ref) {
 
     const animateFunc = () => {
       swaps.forEach((swap, i) => {
+        // Animate each character towards the destination
         setTimeout(() => {
           playAnimation(i);
-        }, (0, _utils.randomMinMax)(0, 3000));
+        }, (0, _utils.randomMinMax)(0, 3000)); // Animate each character back to their original location
+
         setTimeout(() => {
           playAnimation(i, false);
         }, (0, _utils.randomMinMax)(6000, 9000));
-      });
+      }); // Repeat forever
+
       setTimeout(() => {
         animateFunc();
       }, 12000);
@@ -124,8 +129,7 @@ function Anagram(_ref) {
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "anagram-swap"
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "word word-1 hidden",
-    ref: wordContainerRef1
+    className: "word word-1 hidden"
   }, [...words[0]].map((letter, i) => {
     return /*#__PURE__*/_react.default.createElement("span", {
       ref: lettersRefs1.current[i],
@@ -133,8 +137,7 @@ function Anagram(_ref) {
       key: "".concat(i).concat(letter)
     }, letter);
   })), /*#__PURE__*/_react.default.createElement("div", {
-    className: "word word-2 hidden",
-    ref: wordContainerRef2
+    className: "word word-2 hidden"
   }, [...words[1]].map((letter, i) => {
     return /*#__PURE__*/_react.default.createElement("span", {
       ref: lettersRefs2.current[i],
@@ -142,16 +145,20 @@ function Anagram(_ref) {
       key: "".concat(i).concat(letter)
     }, letter);
   })), /*#__PURE__*/_react.default.createElement("div", {
-    className: "word word-animation",
-    ref: animationContainerRef
+    className: "word word-animation"
   }, [...words[0]].map((letter, i) => {
     let letterStyles = {};
     const swap = swapAnimations[i];
 
     if (isFontLoaded && swap && swap.playing) {
       const left = "".concat(swap.dest.offsetLeft - swap.src.offsetLeft, "px");
+      const top = "".concat(swap.dest.offsetTop - swap.src.offsetTop, "px"); // Trying to fix issue with wrapped text
+      // const left = `${swap.dest.rect.x - swap.src.rect.x}px`;
+      // const top = `${swap.dest.rect.y - swap.src.rect.y}px`;
+
       letterStyles = {
-        left
+        left,
+        top
       };
     }
 

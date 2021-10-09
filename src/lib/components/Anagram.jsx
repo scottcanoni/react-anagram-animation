@@ -15,9 +15,6 @@ const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
  * @returns {JSX.Element}
  */
 export default function Anagram({ family, weight, style, stretch, words = DEFAULT_WORDS }) {
-    const wordContainerRef1 = createRef();
-    const wordContainerRef2 = createRef();
-    const animationContainerRef = createRef();
     const lettersRefs1 = useRef([...words[0]].map(() => createRef()));
     const lettersRefs2 = useRef([...words[1]].map(() => createRef()));
     const [swapAnimations, setSwapAnimations] = useState({});
@@ -64,16 +61,21 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
                 throw new Error(`Not sure how to animate since all source letters were paired already, disappear maybe?`);
             }
 
+            // If the text wraps then the offset left isn't correct.
             const swap = {
                 src: {
                     letter,
                     element: lettersRefs1.current[i].current,
                     offsetLeft: lettersRefs1.current[i].current.offsetLeft,
+                    offsetTop: lettersRefs1.current[i].current.offsetTop,
+                    // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
                 },
                 dest: {
                     letter: words[1][destLetterIndex],
                     element: lettersRefs2.current[destLetterIndex].current,
                     offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft,
+                    offsetTop: lettersRefs2.current[destLetterIndex].current.offsetTop,
+                    // rect: lettersRefs2.current[destLetterIndex].current.getBoundingClientRect(),
                 },
             };
             swaps.push(swap);
@@ -83,15 +85,18 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
 
         const animateFunc = () => {
             swaps.forEach((swap, i) => {
+                // Animate each character towards the destination
                 setTimeout(() => {
                     playAnimation(i);
                 }, randomMinMax(0, 3000));
 
+                // Animate each character back to their original location
                 setTimeout(() => {
                     playAnimation(i, false);
                 }, randomMinMax(6000, 9000));
             });
 
+            // Repeat forever
             setTimeout(() => {
                 animateFunc();
             }, 12000);
@@ -103,28 +108,32 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
 
     return (
         <div className="anagram-swap">
-            <div className="word word-1 hidden" ref={wordContainerRef1}>
+            <div className="word word-1 hidden">
                 {
                     [...words[0]].map((letter, i) => {
                         return <span ref={lettersRefs1.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
-            <div className="word word-2 hidden" ref={wordContainerRef2}>
+            <div className="word word-2 hidden">
                 {
                     [...words[1]].map((letter, i) => {
                         return <span ref={lettersRefs2.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
-            <div className="word word-animation" ref={animationContainerRef}>
+            <div className="word word-animation">
                 {
                     [...words[0]].map((letter, i) => {
                         let letterStyles = {};
                         const swap = swapAnimations[i];
                         if (isFontLoaded && swap && swap.playing) {
                             const left = `${swap.dest.offsetLeft - swap.src.offsetLeft}px`;
-                            letterStyles = { left };
+                            const top = `${swap.dest.offsetTop - swap.src.offsetTop}px`;
+                            // Trying to fix issue with wrapped text
+                            // const left = `${swap.dest.rect.x - swap.src.rect.x}px`;
+                            // const top = `${swap.dest.rect.y - swap.src.rect.y}px`;
+                            letterStyles = { left, top };
                         }
 
                         return (

@@ -56,6 +56,17 @@ The following props are passed along to [Font Face Observer](https://github.com/
 - `style` {string} - The font-style: `normal`, `italic`, `oblique`
 - `stretch` {string} - The font stretch: `normal`, `condensed`, `expanded`, etc
 
+Styling
+----
+
+You can use the CSS transition property to adjust the speed and duration of the animation completely.  Can you find a neat transition animation? Please share! :)
+
+```css
+.anagram-swap .word .letter {
+    transition: all, 2s, cubic-bezier(0.1, 0.7, 1.0, 0.1), 2s;
+}
+```
+
 Run Locally
 ----
 
