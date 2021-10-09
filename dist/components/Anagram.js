@@ -11,10 +11,6 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _utils = require("../utils");
 
-var _useFontFaceObserver = _interopRequireDefault(require("use-font-face-observer"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -25,24 +21,17 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
 /**
  * Render and animate from one word to another word and back again.
- * @param {string} family The font-family: `Open Sans`, `Roboto`, `Montserrat` etc
- * @param {string|number} weight The font-weight: normal, bold, 800, etc
- * @param {string} style The font-style: normal, italic, oblique
- * @param {string} stretch The font stretch: normal, condensed, expanded, etc
+ *
  * @param {[{string}]} words The 2 words to animate between.
+ * @param {AnimationOptions} animationOptions Timing options for when to start, how fast forward/backwards, and when to loop.
  * @returns {JSX.Element}
  */
-
 function Anagram(_ref) {
   let {
-    family,
-    weight,
-    style,
-    stretch,
-    words = DEFAULT_WORDS
+    words,
+    animationOptions
   } = _ref;
   const lettersRefs1 = (0, _react.useRef)([...words[0]].map(() => /*#__PURE__*/(0, _react.createRef)()));
   const lettersRefs2 = (0, _react.useRef)([...words[1]].map(() => /*#__PURE__*/(0, _react.createRef)()));
@@ -57,22 +46,15 @@ function Anagram(_ref) {
       });
     });
   }, [setSwapAnimations]);
-  /* @type FontFace */
-
-  const fontFace = {
-    family,
-    weight,
-    style,
-    stretch
-  };
-  const enableFontFaceObserver = family || weight || style || stretch;
-  const isFontLoaded = (0, _useFontFaceObserver.default)(enableFontFaceObserver ? [fontFace] : []);
+  const {
+    randomStartMin,
+    randomStartMax,
+    randomReverseMin,
+    randomReverseMax,
+    loopAnimation,
+    waitToStart
+  } = animationOptions;
   (0, _react.useEffect)(() => {
-    if (!isFontLoaded) {
-      // wait until fonts are loaded
-      return;
-    }
-
     const swaps = [];
     const destLettersPairedByIndex = [];
     [...words[0]].forEach((letter, i) => {
@@ -112,20 +94,23 @@ function Anagram(_ref) {
         // Animate each character towards the destination
         setTimeout(() => {
           playAnimation(i);
-        }, (0, _utils.randomMinMax)(0, 3000)); // Animate each character back to their original location
+        }, (0, _utils.randomMinMax)(randomStartMin, randomStartMax)); // Animate each character back to their original location
 
         setTimeout(() => {
           playAnimation(i, false);
-        }, (0, _utils.randomMinMax)(6000, 9000));
+        }, (0, _utils.randomMinMax)(randomReverseMin, randomReverseMax));
       }); // Repeat forever
 
       setTimeout(() => {
         animateFunc();
-      }, 12000);
-    };
+      }, loopAnimation);
+    }; // Start the process
 
-    animateFunc();
-  }, [isFontLoaded, lettersRefs1, lettersRefs2, playAnimation, words]);
+
+    setTimeout(() => {
+      animateFunc();
+    }, waitToStart);
+  }, [lettersRefs1, lettersRefs2, loopAnimation, playAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "anagram-swap"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -150,7 +135,7 @@ function Anagram(_ref) {
     let letterStyles = {};
     const swap = swapAnimations[i];
 
-    if (isFontLoaded && swap && swap.playing) {
+    if (swap && swap.playing) {
       const left = "".concat(swap.dest.offsetLeft - swap.src.offsetLeft, "px");
       const top = "".concat(swap.dest.offsetTop - swap.src.offsetTop, "px"); // Trying to fix issue with wrapped text
       // const left = `${swap.dest.rect.x - swap.src.rect.x}px`;

@@ -11,7 +11,18 @@ ReactDOM.render(
 
             <Anagram family="Open Sans" />
 
-            <br/><br/><br/>
+            <br /><br /><br />
+
+            <Anagram family="Open Sans" animationOptions={{
+                waitToStart: 5000,
+                randomStartMin: 0,
+                randomStartMax: 0,
+                randomReverseMin: 6000,
+                randomReverseMax: 6000,
+                loopAnimation: 20000,
+            }} />
+
+            <br /><br /><br />
 
             <Anagram family="Open Sans" words={['Maria Annotating Camera', 'React Anagram Animation']} />
         </div>

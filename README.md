@@ -5,6 +5,11 @@ A React component to use CSS animations to swap letters in 2 words which are an 
 
 The text is animated in position after calculating initial and final positions of each letter.
 
+[![build status](https://img.shields.io/github/workflow/status/scottcanoni/react-anagram-animation/CI?style=for-the-badge)](https://github.com/scottcanoni/react-anagram-animation/actions)
+[![downloads per month](https://img.shields.io/npm/dm/react-anagram-animation.svg?style=for-the-badge)](https://www.npmjs.com/package/react-anagram-animation)
+[![total downloads](https://img.shields.io/npm/dt/react-anagram-animation.svg?style=for-the-badge)](https://www.npmjs.com/package/react-anagram-animation)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/react-anagram-animation?style=for-the-badge)](https://bundlephobia.com/result?p=react-anagram-animation)
+
 Install
 ----
 
@@ -31,6 +36,19 @@ export default function MyComponent() {
 }
 ```
 
+To control the animation speed and timing, you can pass an object of `animationOptions`.
+
+```js
+<Anagram animationOptions={{
+    waitToStart: 5000,
+    randomStartMin: 0,
+    randomStartMax: 0,
+    randomReverseMin: 6000,
+    randomReverseMax: 6000,
+    loopAnimation: 20000,
+}} />
+```
+
 If you are using an embedded font and need to wait for it to load before animating, 
 then you should specify the font `family` name and/or other font specifics.
 
@@ -38,23 +56,41 @@ then you should specify the font `family` name and/or other font specifics.
 <Anagram family="Open Sans" />
 ```
 ```js
-<Anagram family="Montserrat" weight="bold" />
-```
-```js
 <Anagram family="Roboto" weight="600" style="italic" stretch="expanded" />
 ```
 
-Props
+API
 ----
 
-- `words`: {array} - An array containing exactly 2 words which are an anagram of each other - `['NIGHT', 'THING']`
+### Props
 
-The following props are passed along to [Font Face Observer](https://github.com/iamskok/use-font-face-observer)
+| Prop               | Type   | Default                                                  | Description                                             |
+| :----------------- | :----- | :------------------------------------------------------- | :------------------------------------------------------ |
+| `words`            | array  | `['React Anagram Animation', 'Magenta Raincoat Airman']` | An array containing exactly 2 words which are an anagram of each other. |
+| `animationOptions` | object | `AnimationOptions`                                       | Timing options for when to start, how fast to animate forwards, backwards, and when to loop (optional). |
+| `fontToObserve`    | object | `FontToObserve`                                          | A description of an embedded font to observe and wait until loaded.  If not specified, animation will loaded immediately (optional). |
 
-- `family` {string} - The font-family: `Open Sans`, `Roboto`, `Montserrat` etc
-- `weight` {string|number} - The font-weight: `normal`, `bold`, `800`, etc
-- `style` {string} - The font-style: `normal`, `italic`, `oblique`
-- `stretch` {string} - The font stretch: `normal`, `condensed`, `expanded`, etc
+#### AnimationOptions
+
+| Property           | Type   | Default | Description                                                                                   |
+| :----------------- | :----- | :------ | :-------------------------------------------------------------------------------------------- |
+| `randomStartMin`   | number | `0`     | The minimum amount of time to randomly wait before starting to animate each letter            |
+| `randomStartMax`   | number | `3000`  | The maximum amount of time to randomly wait before starting to animate each letter            |
+| `randomReverseMin` | number | `6000`  | The minimum amount of time to randomly wait before starting to animate each letter in reverse |
+| `randomReverseMax` | number | `9000`  | The maximum amount of time to randomly wait before starting to animate each letter in reverse |
+| `loopAnimation`    | number | `12000` | The amount of time for each full loop of the animation                                        |
+| `waitToStart`      | number | `0`     | The amount of time to wait before beginning the animation on start up                         |
+
+#### FontToObserve
+
+This object is passed along to [Font Face Observer](https://github.com/iamskok/use-font-face-observer)
+
+| Property  | Type             | Description                                              |
+| :---------| :--------------- | :------------------------------------------------------- |
+| `family`  | string           | The font-family: `Roboto`, `Inter`, `Open Sans`, etc     |
+| `weight`  | string or number | The font-weight: `normal`, `bold`, `800`, etc            |
+| `style`   | string           | The font-style: `normal`, `italic`, `oblique`            |
+| `stretch` | string           | The font stretch: `normal`, `condensed`, `expanded`, etc |
 
 Styling
 ----
@@ -76,6 +112,13 @@ To run demo locally:
 - `yarn start`
 
 and a browser will open to the demo.
+
+Future Ideas
+----
+
+- Animate between more than 2 words.
+- Animate non-anagram words.
+- Supply different animation easing.
 
 
 License

@@ -1,20 +1,15 @@
 /* eslint-disable react/no-array-index-key */
 import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { randomMinMax } from '../utils';
-import useFontFaceObserver from 'use-font-face-observer';
-
-const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
 
 /**
  * Render and animate from one word to another word and back again.
- * @param {string} family The font-family: `Open Sans`, `Roboto`, `Montserrat` etc
- * @param {string|number} weight The font-weight: normal, bold, 800, etc
- * @param {string} style The font-style: normal, italic, oblique
- * @param {string} stretch The font stretch: normal, condensed, expanded, etc
+ *
  * @param {[{string}]} words The 2 words to animate between.
+ * @param {AnimationOptions} animationOptions Timing options for when to start, how fast forward/backwards, and when to loop.
  * @returns {JSX.Element}
  */
-export default function Anagram({ family, weight, style, stretch, words = DEFAULT_WORDS }) {
+export default function Anagram({ words, animationOptions }) {
     const lettersRefs1 = useRef([...words[0]].map(() => createRef()));
     const lettersRefs2 = useRef([...words[1]].map(() => createRef()));
     const [swapAnimations, setSwapAnimations] = useState({});
@@ -30,22 +25,16 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
         });
     }, [setSwapAnimations]);
 
-    /* @type FontFace */
-    const fontFace = {
-        family,
-        weight,
-        style,
-        stretch,
-    };
-    const enableFontFaceObserver = family || weight || style || stretch;
-    const isFontLoaded = useFontFaceObserver(enableFontFaceObserver ? [fontFace] : []);
+    const {
+        randomStartMin,
+        randomStartMax,
+        randomReverseMin,
+        randomReverseMax,
+        loopAnimation,
+        waitToStart,
+    } = animationOptions;
 
     useEffect(() => {
-        if (!isFontLoaded) {
-            // wait until fonts are loaded
-            return;
-        }
-
         const swaps = [];
         const destLettersPairedByIndex = [];
 
@@ -88,23 +77,26 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
                 // Animate each character towards the destination
                 setTimeout(() => {
                     playAnimation(i);
-                }, randomMinMax(0, 3000));
+                }, randomMinMax(randomStartMin, randomStartMax));
 
                 // Animate each character back to their original location
                 setTimeout(() => {
                     playAnimation(i, false);
-                }, randomMinMax(6000, 9000));
+                }, randomMinMax(randomReverseMin, randomReverseMax));
             });
 
             // Repeat forever
             setTimeout(() => {
                 animateFunc();
-            }, 12000);
+            }, loopAnimation);
         };
 
-        animateFunc();
+        // Start the process
+        setTimeout(() => {
+            animateFunc();
+        }, waitToStart);
 
-    }, [isFontLoaded, lettersRefs1, lettersRefs2, playAnimation, words]);
+    }, [lettersRefs1, lettersRefs2, loopAnimation, playAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
 
     return (
         <div className="anagram-swap">
@@ -127,7 +119,7 @@ export default function Anagram({ family, weight, style, stretch, words = DEFAUL
                     [...words[0]].map((letter, i) => {
                         let letterStyles = {};
                         const swap = swapAnimations[i];
-                        if (isFontLoaded && swap && swap.playing) {
+                        if (swap && swap.playing) {
                             const left = `${swap.dest.offsetLeft - swap.src.offsetLeft}px`;
                             const top = `${swap.dest.offsetTop - swap.src.offsetTop}px`;
                             // Trying to fix issue with wrapped text
