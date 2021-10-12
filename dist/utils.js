@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.isAnagram = isAnagram;
 exports.randomMinMax = randomMinMax;
+exports.uuidv4 = uuidv4;
 
 require("core-js/modules/es.regexp.exec.js");
 
@@ -13,6 +14,8 @@ require("core-js/modules/es.string.replace.js");
 require("core-js/modules/es.array.sort.js");
 
 require("core-js/modules/es.string.split.js");
+
+require("core-js/modules/es.regexp.to-string.js");
 
 function isAnagram(stringA, stringB) {
   // Sanitizing
@@ -35,4 +38,12 @@ function randomMinMax() {
   let min = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   let max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function uuidv4() {
+  return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0,
+          v = c === 'x' ? r : r & 0x3 | 0x8;
+    return v.toString(16);
+  });
 }

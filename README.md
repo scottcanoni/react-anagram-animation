@@ -40,23 +40,28 @@ To control the animation speed and timing, you can pass an object of `animationO
 
 ```js
 <Anagram animationOptions={{
-    waitToStart: 5000,
     randomStartMin: 0,
     randomStartMax: 0,
     randomReverseMin: 6000,
     randomReverseMax: 6000,
     loopAnimation: 20000,
+    waitToStart: 5000,
 }} />
 ```
 
 If you are using an embedded font and need to wait for it to load before animating, 
-then you should specify the font `family` name and/or other font specifics.
+then you should specify the `fontToObserve` object with the font family name and/or other font specifics.
 
 ```js
-<Anagram family="Open Sans" />
+<Anagram fontToObserve={{ family: 'Open Sans' }} />
 ```
 ```js
-<Anagram family="Roboto" weight="600" style="italic" stretch="expanded" />
+<Anagram fontToObserve={{
+    family: 'Roboto',
+    weight: 600,
+    style: 'italic',
+    stretch: 'expanded',
+}} />
 ```
 
 API

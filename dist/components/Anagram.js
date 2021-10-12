@@ -33,19 +33,17 @@ function Anagram(_ref) {
     words,
     animationOptions
   } = _ref;
+  const [swapAnimations, setAnimations] = (0, _react.useState)([]);
   const lettersRefs1 = (0, _react.useRef)([...words[0]].map(() => /*#__PURE__*/(0, _react.createRef)()));
   const lettersRefs2 = (0, _react.useRef)([...words[1]].map(() => /*#__PURE__*/(0, _react.createRef)()));
-  const [swapAnimations, setSwapAnimations] = (0, _react.useState)({});
-  const playAnimation = (0, _react.useCallback)(function (i) {
-    let playing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-    setSwapAnimations(prevState => {
-      return _objectSpread(_objectSpread({}, prevState), {}, {
-        [i]: _objectSpread(_objectSpread({}, prevState[i]), {}, {
-          playing
-        })
-      });
+  const updateAnimation = (0, _react.useCallback)(function (i) {
+    let update = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    setAnimations(prevState => {
+      const newState = [...prevState];
+      newState[i] = _objectSpread(_objectSpread({}, prevState[i]), update);
+      return newState;
     });
-  }, [setSwapAnimations]);
+  }, [setAnimations]);
   const {
     randomStartMin,
     randomStartMax,
@@ -70,13 +68,21 @@ function Anagram(_ref) {
 
 
       const swap = {
+        id: (0, _utils.uuidv4)(),
+        // for a unique key
+        letter,
+        // the displayed letter
+        playing: false,
+        // if this letter is animating to the destination
+        // the source location, starting place and letter
         src: {
-          letter,
+          letter: words[0][i],
           element: lettersRefs1.current[i].current,
           offsetLeft: lettersRefs1.current[i].current.offsetLeft,
           offsetTop: lettersRefs1.current[i].current.offsetTop // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
 
         },
+        // the destination location and letter
         dest: {
           letter: words[1][destLetterIndex],
           element: lettersRefs2.current[destLetterIndex].current,
@@ -87,18 +93,24 @@ function Anagram(_ref) {
       };
       swaps.push(swap);
     });
-    setSwapAnimations(swaps);
+    setAnimations(swaps);
 
     const animateFunc = () => {
       swaps.forEach((swap, i) => {
         // Animate each character towards the destination
+        const forwardStartTime = (0, _utils.randomMinMax)(randomStartMin, randomStartMax);
         setTimeout(() => {
-          playAnimation(i);
-        }, (0, _utils.randomMinMax)(randomStartMin, randomStartMax)); // Animate each character back to their original location
+          updateAnimation(i, {
+            playing: true
+          });
+        }, forwardStartTime); // Animate each character back to their original location
 
+        const reverseStartTime = (0, _utils.randomMinMax)(randomReverseMin, randomReverseMax);
         setTimeout(() => {
-          playAnimation(i, false);
-        }, (0, _utils.randomMinMax)(randomReverseMin, randomReverseMax));
+          updateAnimation(i, {
+            playing: false
+          });
+        }, reverseStartTime);
       }); // Repeat forever
 
       setTimeout(() => {
@@ -110,12 +122,13 @@ function Anagram(_ref) {
     setTimeout(() => {
       animateFunc();
     }, waitToStart);
-  }, [lettersRefs1, lettersRefs2, loopAnimation, playAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
+  }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "anagram-swap"
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "word word-1 hidden"
   }, [...words[0]].map((letter, i) => {
+    // eslint-disable-next-line react/no-array-index-key
     return /*#__PURE__*/_react.default.createElement("span", {
       ref: lettersRefs1.current[i],
       className: "letter",
@@ -124,6 +137,7 @@ function Anagram(_ref) {
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "word word-2 hidden"
   }, [...words[1]].map((letter, i) => {
+    // eslint-disable-next-line react/no-array-index-key
     return /*#__PURE__*/_react.default.createElement("span", {
       ref: lettersRefs2.current[i],
       className: "letter",
@@ -131,15 +145,21 @@ function Anagram(_ref) {
     }, letter);
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "word word-animation"
-  }, [...words[0]].map((letter, i) => {
+  }, swapAnimations.map((renderedLetter, i) => {
+    const {
+      id,
+      letter,
+      playing,
+      src,
+      dest
+    } = renderedLetter;
     let letterStyles = {};
-    const swap = swapAnimations[i];
 
-    if (swap && swap.playing) {
-      const left = "".concat(swap.dest.offsetLeft - swap.src.offsetLeft, "px");
-      const top = "".concat(swap.dest.offsetTop - swap.src.offsetTop, "px"); // Trying to fix issue with wrapped text
-      // const left = `${swap.dest.rect.x - swap.src.rect.x}px`;
-      // const top = `${swap.dest.rect.y - swap.src.rect.y}px`;
+    if (playing) {
+      const left = "".concat(dest.offsetLeft - src.offsetLeft, "px");
+      const top = "".concat(dest.offsetTop - src.offsetTop, "px"); // Trying to fix issue with wrapped text
+      // const left = `${dest.rect.x - src.rect.x}px`;
+      // const top = `${dest.rect.y - src.rect.y}px`;
 
       letterStyles = {
         left,
@@ -148,7 +168,7 @@ function Anagram(_ref) {
     }
 
     return /*#__PURE__*/_react.default.createElement("span", {
-      key: "".concat(i).concat(letter),
+      key: id,
       className: "letter",
       style: letterStyles
     }, letter);

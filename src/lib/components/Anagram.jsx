@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
-import { randomMinMax } from '../utils';
+import { randomMinMax, uuidv4 } from '../utils';
 
 /**
  * Render and animate from one word to another word and back again.
@@ -10,20 +10,22 @@ import { randomMinMax } from '../utils';
  * @returns {JSX.Element}
  */
 export default function Anagram({ words, animationOptions }) {
+    const [swapAnimations, setAnimations] = useState([]);
     const lettersRefs1 = useRef([...words[0]].map(() => createRef()));
     const lettersRefs2 = useRef([...words[1]].map(() => createRef()));
-    const [swapAnimations, setSwapAnimations] = useState({});
-    const playAnimation = useCallback((i, playing = true) => {
-        setSwapAnimations((prevState) => {
-            return {
+    const updateAnimation = useCallback((i, update = {}) => {
+        setAnimations((prevState) => {
+            const newState = [
                 ...prevState,
-                [i]: {
-                    ...prevState[i],
-                    playing,
-                },
-            };
+            ];
+            newState[i] = {
+                ...prevState[i],
+                ...update,
+            }
+
+            return newState;
         });
-    }, [setSwapAnimations]);
+    }, [setAnimations]);
 
     const {
         randomStartMin,
@@ -52,13 +54,18 @@ export default function Anagram({ words, animationOptions }) {
 
             // If the text wraps then the offset left isn't correct.
             const swap = {
+                id: uuidv4(), // for a unique key
+                letter, // the displayed letter
+                playing: false, // if this letter is animating to the destination
+                // the source location, starting place and letter
                 src: {
-                    letter,
+                    letter: words[0][i],
                     element: lettersRefs1.current[i].current,
                     offsetLeft: lettersRefs1.current[i].current.offsetLeft,
                     offsetTop: lettersRefs1.current[i].current.offsetTop,
                     // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
                 },
+                // the destination location and letter
                 dest: {
                     letter: words[1][destLetterIndex],
                     element: lettersRefs2.current[destLetterIndex].current,
@@ -70,19 +77,21 @@ export default function Anagram({ words, animationOptions }) {
             swaps.push(swap);
         });
 
-        setSwapAnimations(swaps);
+        setAnimations(swaps);
 
         const animateFunc = () => {
             swaps.forEach((swap, i) => {
                 // Animate each character towards the destination
+                const forwardStartTime = randomMinMax(randomStartMin, randomStartMax);
                 setTimeout(() => {
-                    playAnimation(i);
-                }, randomMinMax(randomStartMin, randomStartMax));
+                    updateAnimation(i, { playing: true });
+                }, forwardStartTime);
 
                 // Animate each character back to their original location
+                const reverseStartTime = randomMinMax(randomReverseMin, randomReverseMax);
                 setTimeout(() => {
-                    playAnimation(i, false);
-                }, randomMinMax(randomReverseMin, randomReverseMax));
+                    updateAnimation(i, { playing: false });
+                }, reverseStartTime);
             });
 
             // Repeat forever
@@ -96,13 +105,14 @@ export default function Anagram({ words, animationOptions }) {
             animateFunc();
         }, waitToStart);
 
-    }, [lettersRefs1, lettersRefs2, loopAnimation, playAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
+    }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
 
     return (
         <div className="anagram-swap">
             <div className="word word-1 hidden">
                 {
                     [...words[0]].map((letter, i) => {
+                        // eslint-disable-next-line react/no-array-index-key
                         return <span ref={lettersRefs1.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
@@ -110,30 +120,28 @@ export default function Anagram({ words, animationOptions }) {
             <div className="word word-2 hidden">
                 {
                     [...words[1]].map((letter, i) => {
+                        // eslint-disable-next-line react/no-array-index-key
                         return <span ref={lettersRefs2.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
             <div className="word word-animation">
                 {
-                    [...words[0]].map((letter, i) => {
+                    swapAnimations.map((renderedLetter, i) => {
+                        const { id, letter, playing, src, dest } = renderedLetter;
+
                         let letterStyles = {};
-                        const swap = swapAnimations[i];
-                        if (swap && swap.playing) {
-                            const left = `${swap.dest.offsetLeft - swap.src.offsetLeft}px`;
-                            const top = `${swap.dest.offsetTop - swap.src.offsetTop}px`;
+                        if (playing) {
+                            const left = `${dest.offsetLeft - src.offsetLeft}px`;
+                            const top = `${dest.offsetTop - src.offsetTop}px`;
                             // Trying to fix issue with wrapped text
-                            // const left = `${swap.dest.rect.x - swap.src.rect.x}px`;
-                            // const top = `${swap.dest.rect.y - swap.src.rect.y}px`;
+                            // const left = `${dest.rect.x - src.rect.x}px`;
+                            // const top = `${dest.rect.y - src.rect.y}px`;
                             letterStyles = { left, top };
                         }
 
                         return (
-                            <span
-                                key={`${i}${letter}`}
-                                className="letter"
-                                style={letterStyles}
-                            >
+                            <span key={id} className="letter" style={letterStyles}>
                                 {letter}
                             </span>
                         );

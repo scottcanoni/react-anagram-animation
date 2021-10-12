@@ -15,7 +15,7 @@ import './index.css';
 
 /**
  * Render and animate from one word to another word and back again.
- * @param {[{string}]} [words] The 2 words to animate between.
+ * @param {[string]} [words] The 2 words to animate between.
  * @param {AnimationOptions} [animationOptions] Timing options for when to start, how fast to animate forwards, backwards, and when to loop.
  * @param {FontToObserve} [fontToObserve] A description of an embedded font to observe and wait until loaded.
  * @returns {JSX.Element|null}

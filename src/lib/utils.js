@@ -19,3 +19,11 @@ export function isAnagram(stringA, stringB) {
 export function randomMinMax(min = 0, max = 100) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
+
+export function uuidv4() {
+    return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0,
+            v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}

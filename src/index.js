@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Anagram from './lib/components/index';
+import Anagram from './lib/components';
 import './App.css';
 
 ReactDOM.render(
@@ -9,11 +9,14 @@ ReactDOM.render(
             <h1>React Anagram Animation</h1>
             <h2>Demo</h2>
 
-            <Anagram family="Open Sans" />
+            <Anagram words={["bad credit", "debit card"]} fontToObserve={{ family: 'Open Sans' }} />
 
-            <br /><br /><br />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
 
-            <Anagram family="Open Sans" animationOptions={{
+            <Anagram fontToObserve={{ family: 'Open Sans' }} animationOptions={{
                 waitToStart: 5000,
                 randomStartMin: 0,
                 randomStartMax: 0,
@@ -22,9 +25,12 @@ ReactDOM.render(
                 loopAnimation: 20000,
             }} />
 
-            <br /><br /><br />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
 
-            <Anagram family="Open Sans" words={['Maria Annotating Camera', 'React Anagram Animation']} />
+            <Anagram fontToObserve={{ family: 'Open Sans' }} words={['Maria Annotating Camera', 'React Anagram Animation']} />
         </div>
     </React.StrictMode>,
     document.getElementById('root'),
