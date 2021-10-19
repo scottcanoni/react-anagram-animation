@@ -15,6 +15,10 @@ Install
 
 `yarn add react-anagram-animation`
 
+or
+
+`npm install react-anagram-animation`
+
 Demo
 ----
 
