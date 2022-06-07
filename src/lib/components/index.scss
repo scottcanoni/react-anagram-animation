@@ -28,8 +28,7 @@
             position: relative;
             left: 0;
             top: 0;
-            /*transition: all, 2s, cubic-bezier(0.1, 0.7, 1.0, 0.1), 2s;*/
-            transition: all, 2s, ease-in-out, 2s;
+            transition: left 2s ease-in-out, top 2s ease-in-out;
         }
     }
 }
