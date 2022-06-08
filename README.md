@@ -50,7 +50,7 @@ To control the animation speed and timing, you can pass an object of `animationO
 }} />
 ```
 
-If you are using an embedded font and need to wait for it to load before animating, 
+If you are using an embedded font and need to wait for it to load before animating,
 then you should specify the `fontToObserve` object with the font family name and/or other font specifics.
 
 ```js
@@ -78,14 +78,16 @@ API
 
 #### AnimationOptions
 
-| Property           | Type   | Default | Description                                                                                   |
-| :----------------- | :----- | :------ | :-------------------------------------------------------------------------------------------- |
-| `randomStartMin`   | number | `0`     | The minimum amount of time to randomly wait before starting to animate each letter            |
-| `randomStartMax`   | number | `3000`  | The maximum amount of time to randomly wait before starting to animate each letter            |
-| `randomReverseMin` | number | `6000`  | The minimum amount of time to randomly wait before starting to animate each letter in reverse |
-| `randomReverseMax` | number | `9000`  | The maximum amount of time to randomly wait before starting to animate each letter in reverse |
-| `loopAnimation`    | number | `12000` | The amount of time for each full loop of the animation                                        |
-| `waitToStart`      | number | `0`     | The amount of time to wait before beginning the animation on start up                         |
+| Property             | Type   | Default       | Description                                                                                   |
+| :------------------- | :----- | :------------ | :-------------------------------------------------------------------------------------------- |
+| `randomStartMin`     | number | `0`           | The minimum amount of time to randomly wait before starting to animate each letter            |
+| `randomStartMax`     | number | `3000`        | The maximum amount of time to randomly wait before starting to animate each letter            |
+| `randomReverseMin`   | number | `6000`        | The minimum amount of time to randomly wait before starting to animate each letter in reverse |
+| `randomReverseMax`   | number | `9000`        | The maximum amount of time to randomly wait before starting to animate each letter in reverse |
+| `loopAnimation`      | number | `12000`       | The amount of time for each full loop of the animation                                        |
+| `waitToStart`        | number | `0`           | The amount of time to wait before beginning the animation on start up                         |
+| `transitionDuration` | number | `2000`        | How long should it take for a letter to move to its next position                             |
+| `timingFunction`     | string | `ease-in-out` | What timing function should be used for the animation                                         |
 
 #### FontToObserve
 
@@ -97,17 +99,6 @@ This object is passed along to [Font Face Observer](https://github.com/iamskok/u
 | `weight`  | string or number | The font-weight: `normal`, `bold`, `800`, etc            |
 | `style`   | string           | The font-style: `normal`, `italic`, `oblique`            |
 | `stretch` | string           | The font stretch: `normal`, `condensed`, `expanded`, etc |
-
-Styling
-----
-
-You can use the CSS transition property to adjust the speed and duration of the animation completely.  Can you find a neat transition animation? Please share! :)
-
-```css
-.anagram-swap .word .letter {
-    transition: all, 2s, cubic-bezier(0.1, 0.7, 1.0, 0.1), 2s;
-}
-```
 
 Run Locally
 ----
@@ -124,7 +115,6 @@ Future Ideas
 
 - Animate between more than 2 words.
 - Animate non-anagram words.
-- Supply different animation easing.
 
 
 License
