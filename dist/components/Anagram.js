@@ -50,7 +50,9 @@ function Anagram(_ref) {
     randomReverseMin,
     randomReverseMax,
     loopAnimation,
-    waitToStart
+    waitToStart,
+    transitionDuration,
+    timingFunction
   } = animationOptions;
   (0, _react.useEffect)(() => {
     const swaps = [];
@@ -122,7 +124,7 @@ function Anagram(_ref) {
     setTimeout(() => {
       animateFunc();
     }, waitToStart);
-  }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
+  }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, transitionDuration, timingFunction, words]);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "anagram-swap"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -153,18 +155,13 @@ function Anagram(_ref) {
       src,
       dest
     } = renderedLetter;
-    let letterStyles = {};
+    const letterStyles = {
+      transition: "left ".concat(transitionDuration, "ms ").concat(timingFunction, ", top ").concat(transitionDuration, "ms ").concat(timingFunction)
+    };
 
     if (playing) {
-      const left = "".concat(dest.offsetLeft - src.offsetLeft, "px");
-      const top = "".concat(dest.offsetTop - src.offsetTop, "px"); // Trying to fix issue with wrapped text
-      // const left = `${dest.rect.x - src.rect.x}px`;
-      // const top = `${dest.rect.y - src.rect.y}px`;
-
-      letterStyles = {
-        left,
-        top
-      };
+      letterStyles.left = "".concat(dest.offsetLeft - src.offsetLeft, "px");
+      letterStyles.top = "".concat(dest.offsetTop - src.offsetTop, "px");
     }
 
     return /*#__PURE__*/_react.default.createElement("span", {

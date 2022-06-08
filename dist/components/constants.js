@@ -24,6 +24,8 @@ const DEFAULT_ANIMATION_OPTIONS = {
   randomReverseMin: 6000,
   randomReverseMax: 9000,
   loopAnimation: 12000,
-  waitToStart: 0
+  waitToStart: 0,
+  transitionDuration: 2000,
+  timingFunction: 'ease-in-out'
 };
 exports.DEFAULT_ANIMATION_OPTIONS = DEFAULT_ANIMATION_OPTIONS;
