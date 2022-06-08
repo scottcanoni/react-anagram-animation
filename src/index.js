@@ -23,6 +23,8 @@ ReactDOM.render(
                 randomReverseMin: 6000,
                 randomReverseMax: 6000,
                 loopAnimation: 20000,
+                transitionDuration: 1000,
+                timingFunction: 'cubic-bezier(.43,-0.77,.52,1.56)',
             }} />
 
             <br/>
