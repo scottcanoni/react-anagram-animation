@@ -5,8 +5,6 @@ A React component to use CSS animations to swap letters in 2 words which are an 
 
 The text is animated in position after calculating initial and final positions of each letter.
 
-[![build status](https://img.shields.io/github/workflow/status/scottcanoni/react-anagram-animation/CI?style=for-the-badge)](https://github.com/scottcanoni/react-anagram-animation/actions)
-
 Install
 ----
 
