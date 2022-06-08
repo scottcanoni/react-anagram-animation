@@ -34,6 +34,8 @@ export default function Anagram({ words, animationOptions }) {
         randomReverseMax,
         loopAnimation,
         waitToStart,
+        transitionDuration,
+        timingFunction,
     } = animationOptions;
 
     useEffect(() => {
@@ -105,7 +107,7 @@ export default function Anagram({ words, animationOptions }) {
             animateFunc();
         }, waitToStart);
 
-    }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, words]);
+    }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, transitionDuration, timingFunction, words]);
 
     return (
         <div className="anagram-swap">
@@ -130,14 +132,11 @@ export default function Anagram({ words, animationOptions }) {
                     swapAnimations.map((renderedLetter, i) => {
                         const { id, letter, playing, src, dest } = renderedLetter;
 
-                        let letterStyles = {};
+                        const letterStyles = { transition: `left ${transitionDuration}ms ${timingFunction}, top ${transitionDuration}ms ${timingFunction}` };
+
                         if (playing) {
-                            const left = `${dest.offsetLeft - src.offsetLeft}px`;
-                            const top = `${dest.offsetTop - src.offsetTop}px`;
-                            // Trying to fix issue with wrapped text
-                            // const left = `${dest.rect.x - src.rect.x}px`;
-                            // const top = `${dest.rect.y - src.rect.y}px`;
-                            letterStyles = { left, top };
+                            letterStyles.left = `${dest.offsetLeft - src.offsetLeft}px`;
+                            letterStyles.top = `${dest.offsetTop - src.offsetTop}px`;
                         }
 
                         return (

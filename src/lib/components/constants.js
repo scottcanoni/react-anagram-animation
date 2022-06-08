@@ -18,4 +18,6 @@ export const DEFAULT_ANIMATION_OPTIONS = {
     randomReverseMax: 9000,
     loopAnimation: 12000,
     waitToStart: 0,
+    transitionDuration: 2000,
+    timingFunction: 'ease-in-out',
 };
