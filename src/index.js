@@ -1,9 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Anagram from './lib/components';
 import './App.css';
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
     <React.StrictMode>
         <div>
             <h1>React Anagram Animation</h1>
@@ -34,6 +36,5 @@ ReactDOM.render(
 
             <Anagram fontToObserve={{ family: 'Open Sans' }} words={['Maria Annotating Camera', 'React Anagram Animation']} />
         </div>
-    </React.StrictMode>,
-    document.getElementById('root'),
+    </React.StrictMode>
 );
