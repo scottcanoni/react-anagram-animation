@@ -12,8 +12,8 @@
         "start": "npm-run-all -p watch-css start-js",
         "build": "del /Q dist\\* && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
         "build-fresh": "NODE_ENV=production babel src/lib --out-dir dist --copy-files",
-        "build-css": "node-sass-chokidar src/ -o src/",
-        "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+        "build-css": "sass src/:src/",
+        "watch-css": "sass --watch src/:src/",
         "eject": "react-scripts eject"
     },
     "repository": {
@@ -43,11 +43,11 @@
         "@babel/polyfill": "^7.12.1",
         "@babel/preset-env": "^7.15.6",
         "@babel/preset-react": "^7.14.5",
-        "node-sass-chokidar": "^1.5.0",
         "npm-run-all": "^4.1.5",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
-        "react-scripts": "4.0.3"
+        "react-scripts": "4.0.3",
+        "sass": "^1.57.1"
     },
     "eslintConfig": {
         "extends": "react-app"

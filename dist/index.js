@@ -10,12 +10,8 @@ Object.defineProperty(exports, "isAnagram", {
     return _utils.isAnagram;
   }
 });
-
 var _index = _interopRequireDefault(require("./components/index"));
-
 var _utils = require("./utils");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var _default = _index.default;
 exports.default = _default;
