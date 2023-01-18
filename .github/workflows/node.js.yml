@@ -37,11 +37,5 @@ jobs:
       - name: Run a one-line script
         run: echo Building now...
 
-      - name: install
-        run: yarn
-
-      - name: build
-        run: yarn build-clean
-
-      - name: celebrate
-        run: echo DONE!
+      - run: npm i
+      - run: npm run build-fresh --if-present
