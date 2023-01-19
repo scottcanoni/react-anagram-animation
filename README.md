@@ -76,6 +76,8 @@ API
 
 #### AnimationOptions
 
+All time values are in # of milliseconds.
+
 | Property             | Type   | Default       | Description                                                                                   |
 | :------------------- | :----- | :------------ | :-------------------------------------------------------------------------------------------- |
 | `randomStartMin`     | number | `0`           | The minimum amount of time to randomly wait before starting to animate each letter            |

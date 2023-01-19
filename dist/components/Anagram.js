@@ -1,26 +1,20 @@
 "use strict";
 
+require("core-js/modules/es.symbol.description.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = Anagram;
-
 require("core-js/modules/web.dom-collections.iterator.js");
-
 var _react = _interopRequireWildcard(require("react"));
-
 var _utils = require("../utils");
-
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
  * Render and animate from one word to another word and back again.
  *
@@ -66,9 +60,9 @@ function Anagram(_ref) {
 
       if (destLetterIndex === -1) {
         throw new Error("Not sure how to animate since all source letters were paired already, disappear maybe?");
-      } // If the text wraps then the offset left isn't correct.
+      }
 
-
+      // If the text wraps then the offset left isn't correct.
       const swap = {
         id: (0, _utils.uuidv4)(),
         // for a unique key
@@ -81,22 +75,23 @@ function Anagram(_ref) {
           letter: words[0][i],
           element: lettersRefs1.current[i].current,
           offsetLeft: lettersRefs1.current[i].current.offsetLeft,
-          offsetTop: lettersRefs1.current[i].current.offsetTop // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
-
+          offsetTop: lettersRefs1.current[i].current.offsetTop
+          // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
         },
+
         // the destination location and letter
         dest: {
           letter: words[1][destLetterIndex],
           element: lettersRefs2.current[destLetterIndex].current,
           offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft,
-          offsetTop: lettersRefs2.current[destLetterIndex].current.offsetTop // rect: lettersRefs2.current[destLetterIndex].current.getBoundingClientRect(),
-
+          offsetTop: lettersRefs2.current[destLetterIndex].current.offsetTop
+          // rect: lettersRefs2.current[destLetterIndex].current.getBoundingClientRect(),
         }
       };
+
       swaps.push(swap);
     });
     setAnimations(swaps);
-
     const animateFunc = () => {
       swaps.forEach((swap, i) => {
         // Animate each character towards the destination
@@ -105,22 +100,24 @@ function Anagram(_ref) {
           updateAnimation(i, {
             playing: true
           });
-        }, forwardStartTime); // Animate each character back to their original location
+        }, forwardStartTime);
 
+        // Animate each character back to their original location
         const reverseStartTime = (0, _utils.randomMinMax)(randomReverseMin, randomReverseMax);
         setTimeout(() => {
           updateAnimation(i, {
             playing: false
           });
         }, reverseStartTime);
-      }); // Repeat forever
+      });
 
+      // Repeat forever
       setTimeout(() => {
         animateFunc();
       }, loopAnimation);
-    }; // Start the process
+    };
 
-
+    // Start the process
     setTimeout(() => {
       animateFunc();
     }, waitToStart);
@@ -158,12 +155,10 @@ function Anagram(_ref) {
     const letterStyles = {
       transition: "left ".concat(transitionDuration, "ms ").concat(timingFunction, ", top ").concat(transitionDuration, "ms ").concat(timingFunction)
     };
-
     if (playing) {
       letterStyles.left = "".concat(dest.offsetLeft - src.offsetLeft, "px");
       letterStyles.top = "".concat(dest.offsetTop - src.offsetTop, "px");
     }
-
     return /*#__PURE__*/_react.default.createElement("span", {
       key: id,
       className: "letter",

@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DEFAULT_WORDS = exports.DEFAULT_ANIMATION_OPTIONS = void 0;
 const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
+
 /**
  * @typedef AnimationOptions Timing options for when to start, how fast to animate forwards, backwards, and when to loop.
  * @property {number} randomStartMin The minimum amount of time to randomly wait before starting to animate each letter
@@ -16,7 +17,6 @@ const DEFAULT_WORDS = ['React Anagram Animation', 'Magenta Raincoat Airman'];
  */
 
 /** @type AnimationOptions */
-
 exports.DEFAULT_WORDS = DEFAULT_WORDS;
 const DEFAULT_ANIMATION_OPTIONS = {
   randomStartMin: 0,

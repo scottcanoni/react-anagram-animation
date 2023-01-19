@@ -1,6 +1,6 @@
 {
     "name": "react-anagram-animation",
-    "version": "1.3.0-react18-beta.0",
+    "version": "1.3.0-react18-beta.1",
     "author": "Scott Canoni",
     "description": "A React component to use CSS animations to swap letters in 2 words which are an anagram of each other.  The text is animated in position after calculating initial and final positions of each letter.",
     "license": "WTFPL",
@@ -10,14 +10,10 @@
         "analyze": "source-map-explorer 'build/static/js/*.js'",
         "start-js": "react-scripts start",
         "start": "npm-run-all -p watch-css start-js",
-        "start-old": "react-scripts start",
-        "build-old": "react-scripts build",
-        "build-rm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
         "build": "del /Q dist\\* && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
-        "build-clean": "NODE_ENV=production babel src/lib --out-dir dist --copy-files",
-        "build-css": "node-sass-chokidar src/ -o src/",
-        "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-        "test": "react-scripts test",
+        "build-fresh": "NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+        "build-css": "sass src/:src/",
+        "watch-css": "sass --watch src/:src/",
         "eject": "react-scripts eject"
     },
     "repository": {
@@ -42,19 +38,16 @@
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "@babel/cli": "^7.15.7",
-        "@babel/core": "^7.15.5",
+        "@babel/cli": "^7.20.7",
+        "@babel/core": "^7.20.12",
         "@babel/polyfill": "^7.12.1",
         "@babel/preset-env": "^7.15.6",
         "@babel/preset-react": "^7.14.5",
-        "@testing-library/jest-dom": "^5.11.4",
-        "@testing-library/react": "^11.1.0",
-        "@testing-library/user-event": "^12.1.10",
-        "node-sass-chokidar": "^1.5.0",
         "npm-run-all": "^4.1.5",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-scripts": "4.0.3"
+        "react-scripts": "4.0.3",
+        "sass": "^1.57.1"
     },
     "eslintConfig": {
         "extends": "react-app"
