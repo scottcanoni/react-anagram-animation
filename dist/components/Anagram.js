@@ -1,7 +1,6 @@
 "use strict";
 
 require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.weak-map.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
