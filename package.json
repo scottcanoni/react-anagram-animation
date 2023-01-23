@@ -1,6 +1,6 @@
 {
     "name": "react-anagram-animation",
-    "version": "1.2.1",
+    "version": "1.2.1-beta-react18.0",
     "author": "Scott Canoni",
     "description": "A React component to use CSS animations to swap letters in 2 words which are an anagram of each other.  The text is animated in position after calculating initial and final positions of each letter.",
     "license": "WTFPL",
@@ -34,8 +34,8 @@
         "use-font-face-observer": "^1.1.39"
     },
     "peerDependencies": {
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react": "^17.0.2 || ^18.2.0",
+        "react-dom": "^17.0.2 || ^18.2.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.20.7",
