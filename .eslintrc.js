@@ -70,5 +70,5 @@ module.exports = {
     //     jsx: true,
     //     modules: true,
     // },
-    parser: "babel-eslint",
+    parser: "@babel/eslint-parser",
 };
