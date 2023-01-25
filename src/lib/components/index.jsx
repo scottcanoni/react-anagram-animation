@@ -21,12 +21,10 @@ import './index.css';
  * @returns {JSX.Element|null}
  */
 export default function Loader ({ words = DEFAULT_WORDS, animationOptions = {}, fontToObserve }) {
-    const animOptions = {
-        ...DEFAULT_ANIMATION_OPTIONS,
-        ...animationOptions,
-    };
-
     const isFontLoaded = useFontFaceObserver(fontToObserve ? [fontToObserve] : []);
 
-    return isFontLoaded ? <Anagram words={words} animationOptions={animOptions} /> : null;
+    return isFontLoaded ? <Anagram words={words} animationOptions={{
+        ...DEFAULT_ANIMATION_OPTIONS,
+        ...animationOptions,
+    }} /> : null;
 }
