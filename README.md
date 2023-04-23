@@ -65,11 +65,11 @@ API
 
 ### Props
 
-| Prop               | Type   | Default                                                  | Description                                                                                                         |
-| :----------------- |:-------|:---------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------|
-| `words`            | array  | `['React Anagram Animation', 'Magenta Raincoat Airman']` | An array containing exactly 2 words which are an anagram of each other.                                             |
-| `animationOptions` | object | `AnimationOptions`                                       | Timing options for when to start, how fast to animate forwards, backwards, and when to loop (optional).             |
-| `fontToObserve`    | string |                                                          | The name of an embedded font to wait until loaded.  If not specified, animation will loaded immediately (optional). |
+| Prop               | Type   | Default                                                  | Description                                                                                                            |
+| :----------------- |:-------|:---------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
+| `words`            | array  | `['React Anagram Animation', 'Magenta Raincoat Airman']` | An array containing exactly 2 words which are an anagram of each other.                                                |
+| `animationOptions` | object | `AnimationOptions`                                       | Timing options for when to start, how fast to animate forwards, backwards, and when to loop (optional).                |
+| `fontToObserve`    | string |                                                          | The name of an embedded font to wait until loaded.  If not specified, animation will be loaded immediately (optional). |
 
 #### AnimationOptions
 
