@@ -1,6 +1,7 @@
 "use strict";
 
 require("core-js/modules/es.symbol.description.js");
+require("core-js/modules/es.weak-map.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -76,19 +77,15 @@ function Anagram(_ref) {
           element: lettersRefs1.current[i].current,
           offsetLeft: lettersRefs1.current[i].current.offsetLeft,
           offsetTop: lettersRefs1.current[i].current.offsetTop
-          // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
         },
-
         // the destination location and letter
         dest: {
           letter: words[1][destLetterIndex],
           element: lettersRefs2.current[destLetterIndex].current,
           offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft,
           offsetTop: lettersRefs2.current[destLetterIndex].current.offsetTop
-          // rect: lettersRefs2.current[destLetterIndex].current.getBoundingClientRect(),
         }
       };
-
       swaps.push(swap);
     });
     setAnimations(swaps);
@@ -127,7 +124,6 @@ function Anagram(_ref) {
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "word word-1 hidden"
   }, [...words[0]].map((letter, i) => {
-    // eslint-disable-next-line react/no-array-index-key
     return /*#__PURE__*/_react.default.createElement("span", {
       ref: lettersRefs1.current[i],
       className: "letter",
@@ -136,7 +132,6 @@ function Anagram(_ref) {
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "word word-2 hidden"
   }, [...words[1]].map((letter, i) => {
-    // eslint-disable-next-line react/no-array-index-key
     return /*#__PURE__*/_react.default.createElement("span", {
       ref: lettersRefs2.current[i],
       className: "letter",
@@ -144,7 +139,7 @@ function Anagram(_ref) {
     }, letter);
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "word word-animation"
-  }, swapAnimations.map((renderedLetter, i) => {
+  }, swapAnimations.map(renderedLetter => {
     const {
       id,
       letter,

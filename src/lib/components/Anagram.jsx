@@ -21,7 +21,7 @@ export default function Anagram({ words, animationOptions }) {
             newState[i] = {
                 ...prevState[i],
                 ...update,
-            }
+            };
 
             return newState;
         });
@@ -46,7 +46,7 @@ export default function Anagram({ words, animationOptions }) {
             // Find a matching dest character to execute the swap with
             const destLetterIndex = [...words[1]].findIndex((destLetter, srcIndex) => {
                 return destLetter.toLowerCase() === letter.toLowerCase()
-                    && destLettersPairedByIndex[srcIndex] !== true;
+                        && destLettersPairedByIndex[srcIndex] !== true;
             });
             destLettersPairedByIndex[destLetterIndex] = true; // mark this source paired/used
 
@@ -65,7 +65,6 @@ export default function Anagram({ words, animationOptions }) {
                     element: lettersRefs1.current[i].current,
                     offsetLeft: lettersRefs1.current[i].current.offsetLeft,
                     offsetTop: lettersRefs1.current[i].current.offsetTop,
-                    // rect: lettersRefs1.current[i].current.getBoundingClientRect(),
                 },
                 // the destination location and letter
                 dest: {
@@ -73,7 +72,6 @@ export default function Anagram({ words, animationOptions }) {
                     element: lettersRefs2.current[destLetterIndex].current,
                     offsetLeft: lettersRefs2.current[destLetterIndex].current.offsetLeft,
                     offsetTop: lettersRefs2.current[destLetterIndex].current.offsetTop,
-                    // rect: lettersRefs2.current[destLetterIndex].current.getBoundingClientRect(),
                 },
             };
             swaps.push(swap);
@@ -114,7 +112,6 @@ export default function Anagram({ words, animationOptions }) {
             <div className="word word-1 hidden">
                 {
                     [...words[0]].map((letter, i) => {
-                        // eslint-disable-next-line react/no-array-index-key
                         return <span ref={lettersRefs1.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
@@ -122,14 +119,13 @@ export default function Anagram({ words, animationOptions }) {
             <div className="word word-2 hidden">
                 {
                     [...words[1]].map((letter, i) => {
-                        // eslint-disable-next-line react/no-array-index-key
                         return <span ref={lettersRefs2.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
             <div className="word word-animation">
                 {
-                    swapAnimations.map((renderedLetter, i) => {
+                    swapAnimations.map((renderedLetter) => {
                         const { id, letter, playing, src, dest } = renderedLetter;
 
                         const letterStyles = { transition: `left ${transitionDuration}ms ${timingFunction}, top ${transitionDuration}ms ${timingFunction}` };

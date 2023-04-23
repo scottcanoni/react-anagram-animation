@@ -9,7 +9,6 @@ exports.uuidv4 = uuidv4;
 require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.string.replace.js");
 require("core-js/modules/es.array.sort.js");
-require("core-js/modules/es.string.split.js");
 require("core-js/modules/es.regexp.to-string.js");
 function isAnagram(stringA, stringB) {
   // Sanitizing
