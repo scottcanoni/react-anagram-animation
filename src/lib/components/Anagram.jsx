@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { createRef, useCallback, useEffect, useRef, useState } from 'react';
+import { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { randomMinMax, uuidv4 } from '../utils';
 
 /**

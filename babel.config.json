@@ -10,9 +10,14 @@
                     "safari": "11.1"
                 },
                 "useBuiltIns": "usage",
-                "corejs": "3.6.5"
+                "corejs": "3.49"
             }
         ],
-        "@babel/preset-react"
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ]
     ]
 }

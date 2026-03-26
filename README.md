@@ -8,10 +8,6 @@ The text is animated in position after calculating initial and final positions o
 Install
 ----
 
-`yarn add react-anagram-animation`
-
-or
-
 `npm install react-anagram-animation`
 
 Demo
@@ -91,8 +87,8 @@ Run Locally
 
 To run demo locally:
 
-- `yarn`
-- `yarn start`
+- `npm i`
+- `npm start`
 
 and a browser will open to the demo.
 

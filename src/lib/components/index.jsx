@@ -1,4 +1,3 @@
-import React from 'react';
 import useFonts from './useFonts';
 import Anagram from './Anagram';
 import { DEFAULT_ANIMATION_OPTIONS, DEFAULT_WORDS } from './constants';

@@ -10,18 +10,24 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  position: relative; }
-  .anagram-swap .word {
-    position: relative; }
-    .anagram-swap .word.hidden {
-      position: absolute;
-      left: -1000px;
-      visibility: hidden; }
-    .anagram-swap .word .letter {
-      white-space: pre;
-      z-index: 10;
-      display: inline-block;
-      position: relative;
-      left: 0;
-      top: 0;
-      transition: left 2s ease-in-out, top 2s ease-in-out; }
+  position: relative;
+}
+.anagram-swap .word {
+  position: relative;
+}
+.anagram-swap .word.hidden {
+  position: absolute;
+  left: -1000px;
+  visibility: hidden;
+}
+.anagram-swap .word .letter {
+  white-space: pre;
+  z-index: 10;
+  display: inline-block;
+  position: relative;
+  left: 0;
+  top: 0;
+  transition: left 2s ease-in-out, top 2s ease-in-out;
+}
+
+/*# sourceMappingURL=index.css.map */

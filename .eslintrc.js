@@ -1,9 +1,24 @@
 module.exports = {
     extends: [
-        "react-app",
-        "react-app/jest",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:jsx-a11y/recommended",
     ],
+    plugins: ["react", "react-hooks", "jsx-a11y", "import"],
+    settings: {
+        react: {
+            version: "detect",
+        },
+    },
+    env: {
+        browser: true,
+        es2021: true,
+        node: true,
+    },
     rules: {
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": "off",
         indent: ["warn", 4],
         "react/jsx-indent": ["warn", 4],
         "react/jsx-indent-props": ["warn", 4],
@@ -50,25 +65,13 @@ module.exports = {
         "react/no-did-mount-set-state": 0,
         "react/prefer-stateless-function": 0,
         "react/jsx-one-expression-per-line": [0],
-        // Allow jsx tags inside .js files.
         "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
-        // Disable props spreading (<App {...props} />) warning.
         "react/jsx-props-no-spreading": 0,
-        // Throw warning instead of error when using array index as a key.
         "react/no-array-index-key": 1,
-        // Allow using (props) => <Component /> and ({propName}) => <Component /> syntax.
         "react/destructuring-assignment": "off",
-        // Disable <Fragment> => <> replacement. Feel free to change
         "react/jsx-fragments": "off",
-        // Allow modules with named exports only.
         "import/prefer-default-export": 0,
-        // Throw warning when <a href="#"> or <a href="javascript:void(0)"> are used. Use <button> instead.
         "jsx-a11y/anchor-is-valid": ["off", { aspects: ["invalidHref"] }],
     },
-    // DeprecationWarning: The 'ecmaFeatures' config file property is deprecated and has no effect. (found in ".eslintrc.js")
-    // ecmaFeatures: {
-    //     jsx: true,
-    //     modules: true,
-    // },
     parser: "@babel/eslint-parser",
 };
