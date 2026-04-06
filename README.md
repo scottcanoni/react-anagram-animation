@@ -15,7 +15,7 @@ Demo
 
 [DEMO](https://pcszv.csb.app/)
 
-[CodeSandbox](https://codesandbox.io/s/pcszv)
+[CodeSandbox](https://codesandbox.io/p/sandbox/pcszv)
 
 Usage
 ----
