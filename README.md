@@ -74,7 +74,7 @@ If the text uses a webfont, name it with `fontToObserve` so the letters are meas
 <Anagram fontToObserve="Open Sans" />
 ```
 
-Any other prop — `className`, `id`, `style`, `data-*`, `aria-*` — is forwarded to the root element.
+`className` and `style` are merged with the component's own, and any other prop — `id`, `data-*`, `aria-*` — is forwarded to the root element.
 
 ## API
 
