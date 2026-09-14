@@ -46,7 +46,7 @@ function prefersReducedMotion() {
  * @param {AnimationOptions} animationOptions Timing options for when to start, how fast forward/backwards, and when to loop.
  * @returns {JSX.Element}
  */
-export default function Anagram({ words, animationOptions, ...rest }) {
+export default function Anagram({ words, animationOptions, className, style, ...rest }) {
     const [swapAnimations, setAnimations] = useState([]);
     const [isDegraded, setIsDegraded] = useState(false);
     const rootRef = useRef(null);
@@ -232,7 +232,12 @@ export default function Anagram({ words, animationOptions, ...rest }) {
     }, [word1, word2, updateAnimation, loopAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart]);
 
     return (
-        <div className="anagram-swap" style={STYLES.root} ref={rootRef} {...rest}>
+        <div
+            className={className ? `anagram-swap ${className}` : 'anagram-swap'}
+            style={{ ...STYLES.root, ...style }}
+            ref={rootRef}
+            {...rest}
+        >
             <div className="anagram-word anagram-word-1" style={{ ...STYLES.word, ...STYLES.hidden }} aria-hidden="true" ref={word1Ref}>
                 {
                     [...word1].map((letter, i) => {

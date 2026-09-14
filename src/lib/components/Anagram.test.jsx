@@ -186,6 +186,20 @@ describe('<Anagram>', () => {
         expect(container.querySelector('.anagram-word-animation').textContent).toBe('abc');
     });
 
+    it('merges a consumer className instead of replacing its own', () => {
+        const { container } = render(
+            <Anagram words={WORDS} animationOptions={DETERMINISTIC} className="hero" style={{ color: 'red' }} />,
+        );
+        const root = container.querySelector('.anagram-swap');
+
+        // A bare {...rest} spread after className would have wiped out
+        // .anagram-swap and broken every documented styling hook.
+        expect(root).not.toBeNull();
+        expect(root.className).toBe('anagram-swap hero');
+        expect(root.style.position).toBe('relative');
+        expect(root.style.color).toBe('red');
+    });
+
     it('forwards unknown props to the root element', () => {
         const { container } = render(
             <Anagram words={WORDS} animationOptions={DETERMINISTIC} id="hero" data-testid="swap" />,
