@@ -3,13 +3,30 @@ import { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { randomMinMax, uuidv4 } from '../utils';
 
 /**
+ * The only styles this component cannot live without. Everything cosmetic
+ * (color, font, size, casing) is deliberately left to the consumer's own CSS,
+ * which can target the `anagram-*` class names with no specificity fight.
+ */
+const STYLES = {
+    root: { position: 'relative' },
+    word: { position: 'relative' },
+    // `visibility: hidden` and NOT `display: none`: the measurement words must
+    // still participate in layout or offsetLeft/offsetTop return 0 and the
+    // whole animation collapses. `left: -1000px` keeps the duplicated text out
+    // of view; it is safe here because this component animates by a *relative
+    // delta*, which is invariant to where the measured word actually sits.
+    hidden: { position: 'absolute', left: '-1000px', visibility: 'hidden' },
+    letter: { whiteSpace: 'pre', display: 'inline-block', position: 'relative', left: 0, top: 0, zIndex: 10 },
+};
+
+/**
  * Render and animate from one word to another word and back again.
  *
  * @param {[{string}]} words The 2 words to animate between.
  * @param {AnimationOptions} animationOptions Timing options for when to start, how fast forward/backwards, and when to loop.
  * @returns {JSX.Element}
  */
-export default function Anagram({ words, animationOptions }) {
+export default function Anagram({ words, animationOptions, ...rest }) {
     const [swapAnimations, setAnimations] = useState([]);
     const lettersRefs1 = useRef([...words[0]].map(() => createRef()));
     const lettersRefs2 = useRef([...words[1]].map(() => createRef()));
@@ -44,9 +61,9 @@ export default function Anagram({ words, animationOptions }) {
 
         [...words[0]].forEach((letter, i) => {
             // Find a matching dest character to execute the swap with
-            const destLetterIndex = [...words[1]].findIndex((destLetter, srcIndex) => {
+            const destLetterIndex = [...words[1]].findIndex((destLetter, destIndex) => {
                 return destLetter.toLowerCase() === letter.toLowerCase()
-                        && destLettersPairedByIndex[srcIndex] !== true;
+                        && destLettersPairedByIndex[destIndex] !== true;
             });
             destLettersPairedByIndex[destLetterIndex] = true; // mark this source paired/used
 
@@ -108,27 +125,30 @@ export default function Anagram({ words, animationOptions }) {
     }, [lettersRefs1, lettersRefs2, loopAnimation, updateAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart, transitionDuration, timingFunction, words]);
 
     return (
-        <div className="anagram-swap">
-            <div className="word word-1 hidden">
+        <div className="anagram-swap" style={STYLES.root} {...rest}>
+            <div className="anagram-word anagram-word-1" style={{ ...STYLES.word, ...STYLES.hidden }} aria-hidden="true">
                 {
                     [...words[0]].map((letter, i) => {
-                        return <span ref={lettersRefs1.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
+                        return <span ref={lettersRefs1.current[i]} className="anagram-letter" style={STYLES.letter} key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
-            <div className="word word-2 hidden">
+            <div className="anagram-word anagram-word-2" style={{ ...STYLES.word, ...STYLES.hidden }} aria-hidden="true">
                 {
                     [...words[1]].map((letter, i) => {
-                        return <span ref={lettersRefs2.current[i]} className="letter" key={`${i}${letter}`}>{letter}</span>;
+                        return <span ref={lettersRefs2.current[i]} className="anagram-letter" style={STYLES.letter} key={`${i}${letter}`}>{letter}</span>;
                     })
                 }
             </div>
-            <div className="word word-animation">
+            <div className="anagram-word anagram-word-animation" style={STYLES.word}>
                 {
                     swapAnimations.map((renderedLetter) => {
                         const { id, letter, playing, src, dest } = renderedLetter;
 
-                        const letterStyles = { transition: `left ${transitionDuration}ms ${timingFunction}, top ${transitionDuration}ms ${timingFunction}` };
+                        const letterStyles = {
+                            ...STYLES.letter,
+                            transition: `left ${transitionDuration}ms ${timingFunction}, top ${transitionDuration}ms ${timingFunction}`,
+                        };
 
                         if (playing) {
                             letterStyles.left = `${dest.offsetLeft - src.offsetLeft}px`;
@@ -136,7 +156,7 @@ export default function Anagram({ words, animationOptions }) {
                         }
 
                         return (
-                            <span key={id} className="letter" style={letterStyles}>
+                            <span key={id} className="anagram-letter" style={letterStyles}>
                                 {letter}
                             </span>
                         );

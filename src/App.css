@@ -7,6 +7,17 @@ body {
     font-weight: bold;
 }
 
-.anagram-swap .word {
-    white-space: pre;
+/*
+ * Everything below used to be shipped inside the package itself, which meant
+ * every consumer got white uppercase full-width text whether they wanted it or
+ * not. It is demo styling, so it lives in the demo now. This exact block is
+ * reproduced in the README for anyone migrating from v1.
+ */
+.anagram-swap {
+    color: #fff;
+    text-transform: uppercase;
+    text-align: left;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
 }
