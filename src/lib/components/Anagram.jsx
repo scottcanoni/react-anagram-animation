@@ -1,3 +1,9 @@
+/*
+ * Index-based keys are correct in this file: within a given word pair the
+ * letter arrays are fixed length and never reordered, so the index is the
+ * stable identity. The letter is appended only to keep keys readable.
+ */
+/* eslint-disable react/no-array-index-key */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { randomMinMax } from '../utils';
 
@@ -127,7 +133,6 @@ export default function Anagram({ words, animationOptions, ...rest }) {
         const swaps = buildSwaps();
 
         if (swaps === null) {
-            // eslint-disable-next-line no-console
             console.error(
                 '[react-anagram-animation] Cannot animate because a letter of '
                 + `"${word1}" has no unused match in "${word2}". The two words must be `
