@@ -202,6 +202,22 @@ npm run lint
 npm run build    # builds the library into dist/
 ```
 
+### Keeping in sync with react-text-swap-animation
+
+These two packages are deliberately separate, but most of their code is the same and it has drifted badly before. When you change one, check whether the other needs the same change.
+
+**Intentionally identical:** `useFonts.js`, `randomMinMax` in `utils.js`, `eslint.config.js`, `tsconfig.json`, `vite.config.lib.js`, and the GitHub workflows.
+
+**Intentionally different — do not "fix" these to match:**
+
+| | `react-anagram-animation` | `react-text-swap-animation` |
+| :--- | :--- | :--- |
+| Positioning | Relative **delta** (`dest − src`), letters in normal flow | **Absolute** coordinates, letters out of flow |
+| Why | Letters never change character, so flow is safe, and deltas are immune to where the element sits | A letter changes character mid-flight; in flow that would reflow every letter after it |
+| Hidden words | Offset off-screen with `left: -1000px` | **Not** offset — absolute coordinates need all layers to share an origin |
+| Layout | Animation layer is in flow and gives the container its size | Single-cell CSS grid; the measurement words give the container its size |
+| Timers per letter | 2 | 4 (two extra for the mid-flight character change) |
+
 ## License
 
 WTFPL — see [LICENSE](./LICENSE).
