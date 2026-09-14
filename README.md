@@ -204,35 +204,20 @@ npm run build    # builds the library into dist/
 
 ### Releasing
 
-Publishing is automatic. Bump the version, merge to `main`, and CI does the rest:
+Merging to `main` never publishes. A release is a separate, deliberate act:
 
 ```bash
-npm version patch   # or minor / major - edits package.json and commits
+npm version minor        # bumps package.json, commits, and creates the v* tag
+git push --follow-tags   # pushing the tag is what publishes
 ```
 
-Open a PR, merge it, and `.github/workflows/release.yml` publishes. Pushes to
-`main` that do not change the version are ignored, so doc fixes are free.
+CI refuses to publish if the tag and `package.json` ever disagree, so a
+hand-made tag fails loudly instead of shipping the wrong version.
 
 CI authenticates with npm [Trusted Publishing](https://docs.npmjs.com/trusted-publishers)
 over OIDC, so there is no npm token stored in this repository and nothing to
 rotate. `prepublishOnly` runs lint, typecheck, tests and the build, so a broken
 build cannot reach the registry.
-
-### Keeping in sync with react-text-swap-animation
-
-These two packages are deliberately separate, but most of their code is the same and it has drifted badly before. When you change one, check whether the other needs the same change.
-
-**Intentionally identical:** `useFonts.js`, `randomMinMax` in `utils.js`, `eslint.config.js`, `tsconfig.json`, `vite.config.lib.js`, and the GitHub workflows.
-
-**Intentionally different — do not "fix" these to match:**
-
-| | `react-anagram-animation` | `react-text-swap-animation` |
-| :--- | :--- | :--- |
-| Positioning | Relative **delta** (`dest − src`), letters in normal flow | **Absolute** coordinates, letters out of flow |
-| Why | Letters never change character, so flow is safe, and deltas are immune to where the element sits | A letter changes character mid-flight; in flow that would reflow every letter after it |
-| Hidden words | Offset off-screen with `left: -1000px` | **Not** offset — absolute coordinates need all layers to share an origin |
-| Layout | Animation layer is in flow and gives the container its size | Single-cell CSS grid; the measurement words give the container its size |
-| Timers per letter | 2 | 4 (two extra for the mid-flight character change) |
 
 ## License
 
