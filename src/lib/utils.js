@@ -1,3 +1,10 @@
+/**
+ * Are the two strings anagrams of each other? Case, whitespace and punctuation
+ * are ignored, so `isAnagram('bad credit', 'debit card')` is true.
+ * @param {string} stringA
+ * @param {string} stringB
+ * @returns {boolean}
+ */
 export function isAnagram(stringA, stringB) {
     // Sanitizing
     stringA = stringA.toLowerCase().replace(/[\W_]+/g, '');
@@ -18,12 +25,4 @@ export function isAnagram(stringA, stringB) {
  */
 export function randomMinMax(min = 0, max = 100) {
     return Math.floor(Math.random() * (max - min)) + min;
-}
-
-export function uuidv4() {
-    return 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = (Math.random() * 16) | 0,
-            v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
 }

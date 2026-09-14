@@ -1,22 +1,43 @@
 import { useEffect, useState } from 'react';
 
-export default function useFonts(...fontNames) {
-    const [isLoaded, setIsLoaded] = useState(false);
+/**
+ * Wait for an embedded font to load before reporting ready.
+ *
+ * Resolves immediately when no font is named, when there is no DOM (SSR), or
+ * when the browser has no `document.fonts`. Seeding state with `!fontName`
+ * means the server renders real markup instead of nothing in the common case.
+ *
+ * @param {string} [fontName] Font family name to await.
+ * @returns {boolean} Whether it is safe to measure and animate.
+ */
+export default function useFonts(fontName) {
+    const [isLoaded, setIsLoaded] = useState(!fontName);
 
     useEffect(() => {
-        // Inspired by https://stackoverflow.com/a/60138011
-        if (!document || !document.fonts) {
-            // eslint-disable-next-line no-console
-            console.warn('Browser does not support document.fonts API');
+        // `typeof document` and not `!document`: a bare `document` reference
+        // is a ReferenceError under Node, not a falsy value.
+        if (!fontName || typeof document === 'undefined' || !document.fonts) {
             setIsLoaded(true);
 
-            return;
+            return undefined;
         }
 
-        Promise.all(fontNames.map((fontName) => document.fonts.load(`16px "${fontName}"`))).then(() => {
-            setIsLoaded(true);
-        });
-    }, [fontNames]);
+        let cancelled = false;
+        const done = () => {
+            if (!cancelled) {
+                setIsLoaded(true);
+            }
+        };
+
+        // Both handlers are `done` on purpose. `document.fonts.load` rejects on
+        // an unparseable font shorthand, and leaving `isLoaded` false would
+        // render nothing forever with no clue why. Degrade to animating.
+        document.fonts.load(`16px "${fontName}"`).then(done, done);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [fontName]);
 
     return isLoaded;
-};
+}
