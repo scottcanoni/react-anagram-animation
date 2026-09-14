@@ -25,3 +25,6 @@ yarn-error.log*
 
 # library build output
 /dist
+
+# local editor/agent scratch
+.claude
