@@ -46,15 +46,16 @@
         "build-demo": "vite build --outDir demo-build",
         "preview": "vite preview --outDir demo-build",
         "build": "vite build --config vite.config.lib.js",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "typecheck": "tsc --noEmit"
     },
     "peerDependencies": {
         "react": "^17.0.0 || ^18.0.0 || >=19.0.0",
         "react-dom": "^17.0.0 || ^18.0.0 || >=19.0.0"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.28.6",
-        "@eslint/js": "^10.0.1",
+        "@eslint/js": "^9.39.5",
+        "@types/react": "^19.3.0",
         "@vitejs/plugin-react": "^6.0.1",
         "eslint": "^9.39.5",
         "eslint-plugin-import": "^2.32.0",
@@ -64,6 +65,7 @@
         "globals": "^17.12.0",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
+        "typescript": "^7.0.2",
         "vite": "^8.0.3"
     }
 }

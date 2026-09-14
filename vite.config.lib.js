@@ -1,10 +1,21 @@
+import { copyFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+
+// The types are hand-written rather than generated, so they just need copying
+// into the published output. Doing it here keeps the build a single command
+// and avoids a cross-platform shell one-liner in package.json.
+const copyTypes = () => ({
+    name: 'copy-types',
+    closeBundle() {
+        copyFileSync('src/lib/index.d.ts', 'dist/index.d.ts');
+    },
+});
 
 // Library build only. vite.config.js stays the demo's config so neither build
 // entangles the other.
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), copyTypes()],
     build: {
         // es2020 transpiles and polyfills nothing here: the source needs only
         // string iteration, Array.sort, Promise.all and object spread. This
