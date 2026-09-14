@@ -74,6 +74,9 @@ afterEach(() => {
     vi.clearAllTimers();
     vi.useRealTimers();
     vi.restoreAllMocks();
+    // restoreAllMocks does not undo stubGlobal, and without this the
+    // reduced-motion test's matchMedia stub leaks into every test after it.
+    vi.unstubAllGlobals();
 });
 
 describe('<Anagram>', () => {
@@ -191,6 +194,59 @@ describe('<Anagram>', () => {
 
         expect(root.id).toBe('hero');
         expect(root.getAttribute('data-testid')).toBe('swap');
+    });
+
+    it('survives an environment with no ResizeObserver', () => {
+        const original = globalThis.ResizeObserver;
+        delete globalThis.ResizeObserver;
+
+        try {
+            expect(() => render(<Anagram words={WORDS} animationOptions={DETERMINISTIC} />)).not.toThrow();
+        }
+        finally {
+            globalThis.ResizeObserver = original;
+        }
+    });
+
+    it('re-measures on resize without disturbing the playing state', () => {
+        let trigger = () => {};
+        const observed = [];
+        const disconnect = vi.fn();
+        vi.stubGlobal('ResizeObserver', class {
+            constructor(callback) {
+                trigger = callback;
+            }
+
+            observe(element) {
+                observed.push(element);
+            }
+
+            disconnect = disconnect;
+        });
+
+        const { container } = render(<Anagram words={WORDS} animationOptions={DETERMINISTIC} />);
+
+        advance(DETERMINISTIC.waitToStart + DETERMINISTIC.randomStartMin + 1);
+        const before = animatedLetters(container).map((el) => el.style.left);
+
+        // Stubbed only now: React's own scheduler uses rAF during render, and
+        // a synchronous stub in place for that would break the initial mount.
+        vi.stubGlobal('requestAnimationFrame', (cb) => {
+            cb();
+
+            return 1;
+        });
+        vi.stubGlobal('cancelAnimationFrame', () => {});
+
+        act(() => {
+            trigger();
+        });
+
+        // Layout has not changed, so the offsets and the moved state must not
+        // either. A re-measure that reset `playing` would zero these.
+        expect(observed).toEqual([container.querySelector('.anagram-swap')]);
+        expect(animatedLetters(container).map((el) => el.style.left)).toEqual(before);
+        expect(before.some((left) => left !== '0px')).toBe(true);
     });
 
     it('hides the two measurement words from assistive technology', () => {

@@ -49,6 +49,7 @@ function prefersReducedMotion() {
 export default function Anagram({ words, animationOptions, ...rest }) {
     const [swapAnimations, setAnimations] = useState([]);
     const [isDegraded, setIsDegraded] = useState(false);
+    const rootRef = useRef(null);
     const word1Ref = useRef(null);
     const word2Ref = useRef(null);
     const updateAnimation = useCallback((i, update = {}) => {
@@ -111,6 +112,7 @@ export default function Anagram({ words, animationOptions, ...rest }) {
 
                 swaps.push({
                     letter, // the displayed letter
+                    destIndex: destLetterIndex, // needed to re-measure on resize
                     playing: false, // if this letter is animating to the destination
                     // the source location, starting place and letter
                     src: {
@@ -186,17 +188,51 @@ export default function Anagram({ words, animationOptions, ...rest }) {
         // Start the process
         later(animateFunc, waitToStart);
 
+        // Offsets are captured once, so a viewport resize, an orientation
+        // change or a late webfont swap would leave every letter flying to a
+        // stale coordinate. Re-measure in place, preserving `playing` so a
+        // transition already in flight simply retargets.
+        const remeasure = () => {
+            const srcElements = word1Ref.current.children;
+            const destElements = word2Ref.current.children;
+
+            setAnimations((previous) => previous.map((swap, i) => ({
+                ...swap,
+                src: {
+                    ...swap.src,
+                    offsetLeft: srcElements[i].offsetLeft,
+                    offsetTop: srcElements[i].offsetTop,
+                },
+                dest: {
+                    ...swap.dest,
+                    offsetLeft: destElements[swap.destIndex].offsetLeft,
+                    offsetTop: destElements[swap.destIndex].offsetTop,
+                },
+            })));
+        };
+
+        let frame = 0;
+        // jsdom has no ResizeObserver, so this must stay optional.
+        const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(remeasure);
+        });
+
+        observer?.observe(rootRef.current);
+
         // Without this the loop outlived unmount, and React 18/19 StrictMode
         // double-invocation left two permanently out-of-phase animations.
         return () => {
             cancelled = true;
             timers.forEach(clearTimeout);
             timers.clear();
+            observer?.disconnect();
+            cancelAnimationFrame(frame);
         };
     }, [word1, word2, updateAnimation, loopAnimation, randomReverseMax, randomReverseMin, randomStartMax, randomStartMin, waitToStart]);
 
     return (
-        <div className="anagram-swap" style={STYLES.root} {...rest}>
+        <div className="anagram-swap" style={STYLES.root} ref={rootRef} {...rest}>
             <div className="anagram-word anagram-word-1" style={{ ...STYLES.word, ...STYLES.hidden }} aria-hidden="true" ref={word1Ref}>
                 {
                     [...word1].map((letter, i) => {
