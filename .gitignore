@@ -28,3 +28,6 @@ yarn-error.log*
 
 # local editor/agent scratch
 .claude
+
+# packed tarballs
+*.tgz
