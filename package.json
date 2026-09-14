@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/scottcanoni/react-anagram-animation"
+        "url": "git+https://github.com/scottcanoni/react-anagram-animation.git"
     },
     "keywords": [
         "anagram",
@@ -66,5 +66,9 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    }
+    },
+    "bugs": {
+        "url": "https://github.com/scottcanoni/react-anagram-animation/issues"
+    },
+    "homepage": "https://scottcanoni.github.io/react-anagram-animation/"
 }
