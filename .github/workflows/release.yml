@@ -2,12 +2,18 @@ name: Publish to npm
 
 on:
   push:
-    tags: [ 'v*' ]
+    branches: [ main ]
   workflow_dispatch:
+
+# Publishing is irreversible, so never let two runs race each other.
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 permissions:
   contents: read
-  # Required for npm provenance, which npmjs.com renders as a verified badge.
+  # Required for npm Trusted Publishing (OIDC). This is what authenticates to
+  # npm: there is no token stored anywhere in this repository.
   id-token: write
 
 jobs:
@@ -20,8 +26,36 @@ jobs:
           node-version: 22.x
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      # prepublishOnly runs lint, typecheck, test and build.
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Every push to main runs this workflow, but only a version npm has not
+      # seen should actually publish. Without this guard a README fix would
+      # attempt a publish and fail with "cannot publish over previously
+      # published version" - a red X and an email for every doc change.
+      - id: check
+        name: Has this version already been published?
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          LOCAL=$(node -p "require('./package.json').version")
+          FOUND=$(npm view "$NAME@$LOCAL" version 2>/dev/null || true)
+
+          if [ -z "$FOUND" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "Will publish $NAME@$LOCAL" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "$NAME@$LOCAL is already on npm, nothing to do." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # Node 22 ships npm 10.x; Trusted Publishing needs npm >= 11.5.1.
+      - name: Use an npm that supports Trusted Publishing
+        if: steps.check.outputs.publish == 'true'
+        run: npm install -g npm@latest
+
+      - if: steps.check.outputs.publish == 'true'
+        run: npm ci
+
+      # prepublishOnly runs lint, typecheck, test and build, so a broken build
+      # cannot reach the registry. --provenance is implied by Trusted
+      # Publishing; it is spelled out here to keep the intent obvious.
+      - if: steps.check.outputs.publish == 'true'
+        run: npm publish --provenance --access public

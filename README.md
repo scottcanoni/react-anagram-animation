@@ -202,6 +202,22 @@ npm run lint
 npm run build    # builds the library into dist/
 ```
 
+### Releasing
+
+Publishing is automatic. Bump the version, merge to `main`, and CI does the rest:
+
+```bash
+npm version patch   # or minor / major - edits package.json and commits
+```
+
+Open a PR, merge it, and `.github/workflows/release.yml` publishes. Pushes to
+`main` that do not change the version are ignored, so doc fixes are free.
+
+CI authenticates with npm [Trusted Publishing](https://docs.npmjs.com/trusted-publishers)
+over OIDC, so there is no npm token stored in this repository and nothing to
+rotate. `prepublishOnly` runs lint, typecheck, tests and the build, so a broken
+build cannot reach the registry.
+
 ### Keeping in sync with react-text-swap-animation
 
 These two packages are deliberately separate, but most of their code is the same and it has drifted badly before. When you change one, check whether the other needs the same change.
