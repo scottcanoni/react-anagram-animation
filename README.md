@@ -204,20 +204,87 @@ npm run build    # builds the library into dist/
 
 ### Releasing
 
-Merging to `main` never publishes. A release is a separate, deliberate act:
+Merging to `main` never publishes. Only pushing a `v*` tag does, so docs,
+dependency bumps and CI changes can land freely.
+
+**1. Check what will actually ship.** From a *fresh clone*, so nothing
+uncommitted or stale in your working directory can leak into the package:
 
 ```bash
-npm version minor        # bumps package.json, commits, and creates the v* tag
+git clone --depth 1 https://github.com/scottcanoni/react-anagram-animation.git /tmp/verify
+cd /tmp/verify && npm ci && npm run build && npm pack --dry-run
+```
+
+Expect 8 files: `LICENSE`, `README.md`, `package.json`, and five in `dist/`.
+
+**2. Bump and tag.** `npm version` writes `package.json` and creates the tag in
+one operation, so the two cannot drift apart:
+
+```bash
+npm version patch        # or minor / major
 git push --follow-tags   # pushing the tag is what publishes
 ```
 
-CI refuses to publish if the tag and `package.json` ever disagree, so a
-hand-made tag fails loudly instead of shipping the wrong version.
+**3. Wait about two minutes.** `release.yml` checks the tag matches
+`package.json`, then runs `npm publish` — which runs `prepublishOnly` first:
+lint, typecheck, tests and build. If any of those fail, nothing is published.
 
-CI authenticates with npm [Trusted Publishing](https://docs.npmjs.com/trusted-publishers)
-over OIDC, so there is no npm token stored in this repository and nothing to
-rotate. `prepublishOnly` runs lint, typecheck, tests and the build, so a broken
-build cannot reach the registry.
+**4. Verify.** `npm view` lies immediately after a publish: the registry
+processes asynchronously and your local npm cache holds a stale packument. Ask
+the registry directly instead:
+
+```bash
+curl -s https://registry.npmjs.org/react-anagram-animation | grep -o '"latest":"[^"]*"'
+```
+
+For the same caching reason a local `npm install` of the new version may fail
+with `ETARGET`; `npm install --prefer-online` fixes it. Neither affects anyone
+else.
+
+#### If a release goes wrong
+
+Don't unpublish. Point `latest` back at the last good version and fix forward:
+
+```bash
+npm dist-tag add react-anagram-animation@1.5.1 latest
+```
+
+Existing installs of the bad version are unaffected; new ones resolve to the
+old version until you publish a fix.
+
+#### One-time infrastructure
+
+Already configured. Recorded here in case this repo is ever recreated:
+
+- **npm Trusted Publishing** — npmjs.com → the package → *Settings* → *Trusted
+  Publisher* → *GitHub Actions*, with repository `scottcanoni/react-anagram-animation`, workflow
+  filename `release.yml` (that exact string, not a path), no environment, and
+  direct publishing allowed. This is what authenticates CI over OIDC: there is
+  no npm token in this repository, nothing to rotate, and nothing to leak. It
+  also produces the provenance attestation npm shows on the package page.
+- **GitHub Pages** — repo *Settings* → *Pages* → *Source: GitHub Actions*.
+  `pages.yml` builds the demo with Vite and deploys it on every push to `main`.
+  Ignore the Jekyll and Static HTML starter cards; neither runs a build step.
+
+### Keeping in sync with `react-text-swap-animation`
+
+These two packages are deliberately separate, but most of their code is the same
+and it has drifted badly before. When you change one, check whether the other
+needs the same change.
+
+**Intentionally identical:** `useFonts.js`, `randomMinMax` in `utils.js`,
+`eslint.config.js`, `tsconfig.json`, `vite.config.lib.js`, and the GitHub
+workflows.
+
+**Intentionally different — do not "fix" these to match:**
+
+| | `react-anagram-animation` | `react-text-swap-animation` |
+| :--- | :--- | :--- |
+| Positioning | Relative **delta** (`dest − src`), letters in normal flow | **Absolute** coordinates, letters out of flow |
+| Why | Letters never change character, so flow is safe, and deltas are immune to where the element sits | A letter changes character mid-flight; in flow that would reflow every letter after it |
+| Hidden words | Offset off-screen with `left: -1000px` | **Not** offset — absolute coordinates need all layers to share an origin |
+| Layout | Animation layer is in flow and gives the container its size | Single-cell CSS grid; the measurement words give the container its size |
+| Timers per letter | 2 | 4 (two extra for the mid-flight character change) |
 
 ## License
 
